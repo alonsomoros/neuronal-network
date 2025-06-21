@@ -1,13 +1,16 @@
 import processing.core.PApplet;
 
-public class Punto extends PApplet {
+public class Punto {
     public float x;
     public float y;
     public int etiqueta;
 
+    public PApplet applet;
+
     public Punto(PApplet applet) {
-        this.x = random(applet.width); // Random x between -1 and 1
-        this.y = random(applet.height); // Random y between -1 and 1
+        this.applet = applet;
+        this.x = applet.random(applet.width); // Random x between -1 and 1
+        this.y = applet.random(applet.height); // Random y between -1 and 1
         if (x > y) {
             etiqueta = 1; // Positive class
         } else {
