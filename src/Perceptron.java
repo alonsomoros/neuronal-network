@@ -46,34 +46,51 @@ public class Perceptron {
     }
 
     public void entrenamiento(float[] entradas, int objetivo) {
+//        // Imprimir las entradas antes de modificación
+//        imprimirEntradasPre(entradas, objetivo);
+
         int salida = predecirSalida(entradas);
+
         // Calcular el error
         float error = objetivo - salida;
 
+
         if (error == 0) {
+            System.out.println("---");
             return; // No hay error, no se necesita actualizar los pesos
         } else {
+            // Imprimir las entradas antes de modificación
+            imprimirEntradasPre(entradas, objetivo);
             // Imprimir el error
-            imprimirError(error, entradas, objetivo);
-        }
+            imprimirError(error, salida);
 
-        // Modificar todos los pesos
-        for (int i = 0; i < pesos.length; i++) {
-            if (error == 0) {
-                return; // No hay error, no se necesita actualizar los pesos
-            } else {
-                // Imprimir el error
-                imprimirError(error, entradas, objetivo);
+            // Modificar todos los pesos
+            for (int i = 0; i < pesos.length; i++) {
                 // Actualizar cada peso según el error y la tasa de aprendizaje
                 pesos[i] += error * entradas[i] * tasaAprendizaje; // Actualizar pesos
             }
+            // Actualizar el bias
+            bias += error * tasaAprendizaje;
         }
-        // Actualizar el bias
-        bias += error * tasaAprendizaje;
-
     }
 
-    public void imprimirError(float error, float[] entradas, int salida) {
-        System.out.println("Error: " + error + " para la entrada: " + java.util.Arrays.toString(entradas) + " con salida: " + salida);
+    private void imprimirEntradasPre(float[] entradas, int objetivo) {
+        System.out.println("Entradas: " + java.util.Arrays.toString(entradas));
+        System.out.println("Pesos: " + java.util.Arrays.toString(pesos));
+        System.out.println("Objetivo: " + objetivo + " (X > Y = 1)");
+    }
+
+    public void imprimirError(float error, int objetivo) {
+        System.out.println("Salida: " + objetivo + " -> Error: " + error);
+        System.out.println("---");
+    }
+
+    public void resetPesosRandom() {
+        // Reiniciar los pesos a valores aleatorios
+        for (int i = 0; i < this.pesos.length; i++) {
+            this.pesos[i] = this.random.nextFloat() * 2 - 1; // -1 , 1
+        }
+        // Reiniciar el bias a un valor aleatorio
+        this.bias = this.random.nextFloat() * 2 - 1; // -1 , 1
     }
 }

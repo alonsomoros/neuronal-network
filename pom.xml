@@ -12,5 +12,11 @@
             <artifactId>core</artifactId>
             <version>3.3.7</version>
         </dependency>
+        <!-- Dependencia de ND4J -->
+        <dependency>
+            <groupId>org.nd4j</groupId>
+            <artifactId>nd4j-native</artifactId>
+            <version>1.0.0-M2.1</version>
+        </dependency>
     </dependencies>
 </project>

@@ -1,10 +1,9 @@
 import processing.core.PApplet;
+import processing.event.KeyEvent;
 
 public class Main extends PApplet {
     Perceptron perceptron;
-    Punto[] puntos = new Punto[100];
-
-    int entrenamientoIndex = 0;
+    Punto[] puntos = new Punto[10];
 
     public static void main(String[] args) {
         PApplet.main("Main");
@@ -27,27 +26,16 @@ public class Main extends PApplet {
         stroke(0);
         line(0, 0, width, height);
 
-        // Mostrar los puntos
+        // Mostrar los puntos y sus etiquetas
         for (Punto punto : puntos) {
             punto.show(this);
+//            punto.showEtiqueta(this, perceptron, punto);
+
+
         }
 
-        // Mostrar la etiqueta de cada punto
         for (Punto punto : puntos) {
-
-            // Usar los puntos generados para la entrada del perceptrón
-            float[] entradas = {punto.x, punto.y};
-            int objetivo = punto.etiqueta;
-
-            // Predecir la etiqueta de los puntos
-            int intento = perceptron.predecirSalida(entradas);
-            if (intento == objetivo) {
-                fill(0, 255, 0);
-            } else {
-                fill(255, 0, 0);
-            }
-            noStroke();
-            ellipse(punto.x, punto.y, 4, 4);
+            punto.showEtiqueta(this, perceptron, punto);
         }
 
 
@@ -69,5 +57,16 @@ public class Main extends PApplet {
             perceptron.entrenamiento(entradas, objetivo);
         }
         System.out.println("------------------------------------------------------------");
+    }
+
+    @Override
+    public void keyPressed(KeyEvent event) {
+        if (event.getKey() == ENTER) {
+            for (int i = 0; i < puntos.length; i++) {
+                puntos[i] = new Punto(this);
+                perceptron.resetPesosRandom();
+            }
+        }
+        super.keyPressed(event);
     }
 }
