@@ -9,10 +9,9 @@ public class Perceptron {
     float tasaAprendizaje;
 
     Random random;
-
     public Perceptron(int numeroEntradas, float bias) {
         this.bias = bias;
-        this.tasaAprendizaje = 0.1f;
+        this.tasaAprendizaje = 0.2f;
         this.random = new Random();
         this.pesos = new float[numeroEntradas];
 
@@ -46,14 +45,10 @@ public class Perceptron {
     }
 
     public void entrenamiento(float[] entradas, int objetivo) {
-//        // Imprimir las entradas antes de modificación
-//        imprimirEntradasPre(entradas, objetivo);
-
         int salida = predecirSalida(entradas);
 
         // Calcular el error
         float error = objetivo - salida;
-
 
         if (error == 0) {
             System.out.println("---");
@@ -71,6 +66,7 @@ public class Perceptron {
             }
             // Actualizar el bias
             bias += error * tasaAprendizaje;
+            System.out.println("Pesos actualizados: " + java.util.Arrays.toString(pesos) + " | Bias actualizado: " + bias);
         }
     }
 
@@ -92,5 +88,13 @@ public class Perceptron {
         }
         // Reiniciar el bias a un valor aleatorio
         this.bias = this.random.nextFloat() * 2 - 1; // -1 , 1
+    }
+
+    public float predecirY(float x) {
+        float w0 = pesos[0];
+        float w1 = pesos[1];
+
+        // Ecuación de la recta: y = -(w0/w1) * x - (bias/w1)
+        return -(w0 / w1) * x - (this.bias / w1); // Ecuación de la recta
     }
 }
