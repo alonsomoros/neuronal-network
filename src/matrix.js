@@ -22,17 +22,43 @@ class Matrix {
         }
     }
 
+    // Crea una matriz a partir de un array unidimensional
+    static fromArray(array) {
+        const matriz = new Matrix(array.length, 1);
+        for (let i = 0; i < array.length; i++) {
+            matriz.datos[i][0] = array[i];
+        }
+        return matriz;
+    }
+
+    toArray() {
+        const array = [];
+        for (let i = 0; i < this.filas; i++) {
+            for (let j = 0; j < this.columnas; j++) {
+                array.push(this.datos[i][j]);
+            }
+        }
+        return array;
+    }
 
     // Randomiza la matriz
     randomizar() {
         for (let i = 0; i < this.filas; i++) {
             for (let j = 0; j < this.columnas; j++) {
-                this.datos[i][j] = Math.floor(Math.random() * 10);
+                this.datos[i][j] = this.randomDel_menos1_1();
             }
         }
     }
 
-    sumarMatrices(m1, m2) {
+    randomDel_1_10() {
+        return Math.floor(Math.random() * 10);
+    }
+
+    randomDel_menos1_1() {
+        return Math.random() * 2 - 1;
+    }
+
+    static sumarMatrices(m1, m2) {
         let i;
         let j;
         if (m1 instanceof Matrix && m2 instanceof Matrix) {
@@ -62,9 +88,16 @@ class Matrix {
         let j;
         let i;
         if (m instanceof Matrix) {
-            for (i = 0; i < this.filas; i++) {
-                for (j = 0; j < this.columnas; j++) {
-                    this.datos[i][j] += m.datos[i][j];
+            if (this.filas !== m.filas || this.columnas !== m.columnas) {
+                throw new Error(
+                    `No se puede sumar matrices: this. es una ${this.filas}×${this.columnas}, ` +
+                    `y el argumento es una ${m.filas}×${m.columnas}`
+                );
+            } else {
+                for (i = 0; i < this.filas; i++) {
+                    for (j = 0; j < this.columnas; j++) {
+                        this.datos[i][j] += m.datos[i][j];
+                    }
                 }
             }
         } else if (typeof m === "number") {
@@ -77,11 +110,11 @@ class Matrix {
     }
 
     // Multiplica dos matrices o una matriz por un número con ambos parámetros
-    multiplicarMatrices(m1, m2) { // m1 2x3 - m2 3x2
+    static multiplicarMatrices(m1, m2) { // m1 2x3 - m2 3x2
         let i;
         let j;
         if (m1 instanceof Matrix && m2 instanceof Matrix) {
-            if (m1.filas !== m2.columnas) {
+            if (m1.columnas !== m2.filas) {
                 throw new Error("Las matrices no se pueden multiplicar: dimensiones incompatibles.");
             } else {
                 const resultado = Array.from({length: m1.filas}, () => Array(m2.columnas).fill(0));
@@ -97,8 +130,10 @@ class Matrix {
                 }
 
                 // Crear y retornar una nueva instancia de Matrix
-                const nuevaMatrix = new Matrix(m2.filas, m1.columnas);
+                const nuevaMatrix = new Matrix(m1.filas, m2.columnas);
                 nuevaMatrix.datos = resultado;
+                console.log("Multiplicación de matrices: " + m1.filas + "x" + m1.columnas + " (pesos) y " + m2.filas + "x" + m2.columnas + " (entradas)");
+                console.log("Dimensiones de la nueva matriz: " + nuevaMatrix.filas + "x" + nuevaMatrix.columnas);
                 return nuevaMatrix;
             }
         } else if (typeof m2 === "number") {
@@ -126,7 +161,7 @@ class Matrix {
         let i;
         let j;
         if (m instanceof Matrix) {
-            if (this.filas !== m.columnas) {
+            if (this.columnas !== m.filas) {
                 throw new Error("Las matrices no se pueden multiplicar: dimensiones incompatibles.");
             } else {
                 const resultado = Array.from({length: this.filas}, () => Array(m.columnas).fill(0));
@@ -151,6 +186,61 @@ class Matrix {
                 for (j = 0; j < this.columnas; j++) {
                     this.datos[i][j] *= m;
                 }
+            }
+        }
+    }
+
+    // Transpone la matriz original
+    static transponer() {
+        if (this instanceof Matrix) {
+            const resultado = Array.from({length: this.columnas}, () => Array(this.filas).fill(0));
+            for (let i = 0; i < this.filas; i++) {
+                for (let j = 0; j < this.columnas; j++) {
+                    resultado[j][i] = this.datos[i][j];
+                }
+            }
+            // Crear y retornar una nueva instancia de Matrix
+            const nuevaMatrix = new Matrix(this.columnas, this.filas);
+            nuevaMatrix.datos = resultado;
+            return nuevaMatrix;
+        } else {
+            throw new Error("Debe ser una matriz para calcular su transpuesta");
+        }
+    }
+
+    // Instancia la traspuesta de la matriz
+    static transponerMatriz(m) {
+        if (m instanceof Matrix) {
+            const resultado = Array.from({length: m.columnas}, () => Array(m.filas).fill(0));
+            for (let i = 0; i < m.filas; i++) {
+                for (let j = 0; j < m.columnas; j++) {
+                    resultado[j][i] = m.datos[i][j];
+                }
+            }
+            // Crear y retornar una nueva instancia de Matrix
+            const nuevaMatrix = new Matrix(m.columnas, m.filas);
+            nuevaMatrix.datos = resultado;
+            return nuevaMatrix;
+        } else {
+            throw new Error("Debe ser una matriz para calcular su transpuesta");
+        }
+    }
+
+    print() {
+        console.table(this.datos);
+    }
+
+    static print(m) {
+        if (m instanceof Matrix) {
+            console.table(m.datos);
+        }
+    }
+
+    map(f) {
+        for (let i = 0; i < this.filas; i++) {
+            for (let j = 0; j < this.columnas; j++) {
+                let val = this.datos[i][j];
+                this.datos[i][j] = f(val);
             }
         }
     }
