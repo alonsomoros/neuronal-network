@@ -41,21 +41,17 @@ Este repositorio contiene una implementación desde cero de una red neuronal en 
 ## ✅ Estado actual
 
 - [x] Perceptrón simple funcionando
-- [ ] Funciones de activación personalizables
-- [ ] Red neuronal multicapa
-- [ ] Algoritmo de retropropagación
-- [ ] Simulación de agentes que aprenden
+- [x] Funciones de activación personalizables
+- [x] Red neuronal multicapa
+- [x] Algoritmo de retropropagación
+- [x] Simulación de agentes que aprenden
 
 ---
 
-## 🧪 Ejemplo de uso (provisional)
+## 🧪 Funcionamiento y fórmulas
 
-```java
-double[] input = {1.0, 0.0};
-Perceptron p = new Perceptron(input.length);
-double output = p.feedForward(input);
-System.out.println("Resultado: " + output);
-```
+![img.png](img.png)
+
 
 ## 💡 Ideas futuras
 
