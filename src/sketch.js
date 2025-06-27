@@ -1,4 +1,18 @@
-var brain;
+let datos_entrenamiento = [ // XOR
+    { entradas: [0, 0], objetivo: [0] },
+    { entradas: [0, 1], objetivo: [1] },
+    { entradas: [1, 0], objetivo: [1] },
+    { entradas: [1, 1], objetivo: [0] }
+];
+
+let datos_test = [ // XOR
+    { entradas: [0, 0], objetivo: [0] },
+    { entradas: [0, 1], objetivo: [1] },
+    { entradas: [1, 0], objetivo: [1] },
+    { entradas: [1, 1], objetivo: [0] }
+];
+
+let epochs = 10000;
 
 function setup() {
     // pruebaMatrices();
@@ -9,21 +23,18 @@ function draw() {
 
 }
 
-function duplicar(x) {
-    return x * 2;
-}
-
-function duplicarDiagonal(x, fila, columna) {
-    if (fila === columna) {
-        return x * 2;
-    }
-}
-
 function pruebaRedNeuronal() {
-    let redNeuronal = new RedNeuronal(4, 2, 1);
-    let entradas = [1, 0, 0, 1];
-    let salidas = redNeuronal.feedforward(entradas);
-    console.log("Para entradas: " + entradas + ", la salida es: " + salidas);
+    let redNeuronal = new RedNeuronal(2, 2, 1);
+    for (let i = 0; i < epochs; i++) {
+        for (let data of datos_entrenamiento) {
+            redNeuronal.entrenar(data.entradas, data.objetivo);
+        }
+    }
+
+    console.table(redNeuronal.feedforward([0, 0]));
+    console.table(redNeuronal.feedforward([0, 1]));
+    console.table(redNeuronal.feedforward([1, 0]));
+    console.table(redNeuronal.feedforward([1, 1]));
 }
 
 function pruebaMatrices() {
@@ -107,6 +118,6 @@ function pruebaMatrices() {
     let duplicada = new Matrix(2, 2);
     duplicada.randomizar();
     duplicada.print();
-    duplicada.map(duplicar);
+    duplicada.map(this.duplicar);
     duplicada.print();
 }

@@ -158,4 +158,14 @@ class RedNeuronal {
         console.log("Error:");
         output_errors.print();
     }
+
+    duplicar(x) {
+        return x * 2;
+    }
+
+    duplicarDiagonal(x, fila, columna) {
+        if (fila === columna) {
+            return x * 2;
+        }
+    }
 }
