@@ -6,6 +6,30 @@ function derivadaSigmoide(x) {
     return x * (1 - x); // Derivada de la función sigmoide
 }
 
+function lineal(x) {
+    return x; // Función lineal
+}
+
+function derivadaLineal(x) {
+    return 1; // Derivada de la función lineal es 1
+}
+
+function tangenteHiperbólica(x) {
+    return Math.tanh(x); // Función tangente hiperbólica
+}
+
+function tangenteHiperbólicaDerivada(x) {
+    return 1 - Math.pow(Math.tanh(x), 2); // Derivada de la función tangente hiperbólica
+}
+
+function relu(x) {
+    return Math.max(0, x); // Función ReLU (Rectified Linear Unit)
+}
+
+function derivadaReLU(x) {
+    return x > 0 ? 1 : 0; // Derivada de la función ReLU
+}
+
 
 class RedNeuronal {
     constructor(numEntradas, numOcultos, numSalidas) {
