@@ -50,6 +50,19 @@ class Matrix {
         }
     }
 
+    // Randomiza la matriz con instancia
+    static randomizar(m) {
+        if (m instanceof Matrix) {
+            for (let i = 0; i < m.filas; i++) {
+                for (let j = 0; j < m.columnas; j++) {
+                    m.datos[i][j] = m.randomDel_menos1_1();
+                }
+            }
+        } else {
+            throw new Error("El argumento debe ser una instancia de Matrix para randomizar.");
+        }
+    }
+
     randomDel_1_10() {
         return Math.floor(Math.random() * 10);
     }
