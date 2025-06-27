@@ -1,3 +1,5 @@
+package java;
+
 import processing.core.PApplet;
 import static processing.core.PApplet.map;
 

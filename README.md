@@ -27,13 +27,17 @@ Este repositorio contiene una implementación desde cero de una red neuronal en 
 
 ```
 /src
-└── neuralnet
-├── Neuron.java
-├── Perceptron.java
-├── ActivationFunction.java
-├── NeuralNetwork.java
-└── utils/
-└── MatrixUtils.java
+├── java
+│   ├── Main.java
+│   ├── Perceptron.java
+│   └── Punto.java
+├── javascript
+│   ├── index.html
+│   ├── matrix.js
+│   ├── RedNeuronal.js
+│   └── sketch.js
+/rec
+└── esquema_red_neuronal.png
 ```
 
 ---
