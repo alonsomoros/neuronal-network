@@ -58,6 +58,7 @@ class Matrix {
         return Math.random() * 2 - 1;
     }
 
+    // Suma dos matrices o una matriz por un número
     static sumarMatrices(m1, m2) {
         let i;
         let j;
@@ -80,6 +81,34 @@ class Matrix {
                     nuevaMatrix.datos[i][j] = m1.datos[i][j] + m2;
                 }
             }
+            return nuevaMatrix;
+        }
+    }
+
+    // Resta dos matrices o una matriz por un número
+    static restarMatrices(m1, m2) {
+        let i;
+        let j;
+        if (m1 instanceof Matrix && m2 instanceof Matrix) {
+            if (m1.filas !== m2.filas || m1.columnas !== m2.columnas) {
+                throw new Error("Las matrices no se pueden sumar: dimensiones incompatibles.");
+            } else {
+                const resultado = new Matrix(m1.filas, m1.columnas);
+                for (i = 0; i < m1.filas; i++) {
+                    for (j = 0; j < m1.columnas; j++) {
+                        resultado.datos[i][j] = m1.datos[i][j] - m2.datos[i][j];
+                    }
+                }
+                return resultado;
+            }
+        } else if (typeof m2 === "number") {
+            const nuevaMatrix = new Matrix(m1.filas, m1.columnas);
+            for (i = 0; i < m1.filas; i++) {
+                for (j = 0; j < m1.columnas; j++) {
+                    nuevaMatrix.datos[i][j] = m1.datos[i][j] - m2;
+                }
+            }
+            return nuevaMatrix;
         }
     }
 
@@ -109,6 +138,32 @@ class Matrix {
         }
     }
 
+    // Resta dos matrices o una matriz por un número
+    restar(m) {
+        let j;
+        let i;
+        if (m instanceof Matrix) {
+            if (this.filas !== m.filas || this.columnas !== m.columnas) {
+                throw new Error(
+                    `No se puede sumar matrices: this. es una ${this.filas}×${this.columnas}, ` +
+                    `y el argumento es una ${m.filas}×${m.columnas}`
+                );
+            } else {
+                for (i = 0; i < this.filas; i++) {
+                    for (j = 0; j < this.columnas; j++) {
+                        this.datos[i][j] -= m.datos[i][j];
+                    }
+                }
+            }
+        } else if (typeof m === "number") {
+            for (i = 0; i < this.filas; i++) {
+                for (j = 0; j < this.columnas; j++) {
+                    this.datos[i][j] -= m;
+                }
+            }
+        }
+    }
+
     // Multiplica dos matrices o una matriz por un número con ambos parámetros
     static multiplicarMatrices(m1, m2) { // m1 2x3 - m2 3x2
         let i;
@@ -132,8 +187,6 @@ class Matrix {
                 // Crear y retornar una nueva instancia de Matrix
                 const nuevaMatrix = new Matrix(m1.filas, m2.columnas);
                 nuevaMatrix.datos = resultado;
-                console.log("Multiplicación de matrices: " + m1.filas + "x" + m1.columnas + " (pesos) y " + m2.filas + "x" + m2.columnas + " (entradas)");
-                console.log("Dimensiones de la nueva matriz: " + nuevaMatrix.filas + "x" + nuevaMatrix.columnas);
                 return nuevaMatrix;
             }
         } else if (typeof m2 === "number") {
@@ -165,7 +218,6 @@ class Matrix {
                 throw new Error("Las matrices no se pueden multiplicar: dimensiones incompatibles.");
             } else {
                 const resultado = Array.from({length: this.filas}, () => Array(m.columnas).fill(0));
-
                 for (let i = 0; i < this.filas; i++) {
                     for (let j = 0; j < m.columnas; j++) {
                         let suma = 0;
@@ -175,7 +227,6 @@ class Matrix {
                         resultado[i][j] = suma;
                     }
                 }
-
                 // Asignamos el resultado a datos y actualizamos columnas
                 this.datos = resultado;
                 this.columnas = m.columnas;
@@ -189,6 +240,41 @@ class Matrix {
             }
         }
     }
+
+    // Multiplica dos matrices elemento a elemento
+    multiplicarElementwise(m) {
+        let i;
+        let j;
+        if (m instanceof Matrix) {
+            for (i = 0; i < this.filas; i++) {
+                for (j = 0; j < this.columnas; j++) {
+                    this.datos[i][j] *= m.datos[i][j];
+                }
+            }
+        }
+    }
+
+    // Multiplica dos matrices elemento a elemento en una nueva instancia
+    static multiplicarElementwise(m1, m2) {
+        let i;
+        let j;
+        if (m1 instanceof Matrix && m2 instanceof Matrix) {
+            if (m1.filas !== m2.filas || m1.columnas !== m2.columnas) {
+                throw new Error("Las matrices no se pueden multiplicar: dimensiones incompatibles.");
+            } else {
+                const resultado = new Matrix(m1.filas, m1.columnas);
+                for (i = 0; i < m1.filas; i++) {
+                    for (j = 0; j < m1.columnas; j++) {
+                        resultado.datos[i][j] = m1.datos[i][j] * m2.datos[i][j];
+                    }
+                }
+                return resultado;
+            }
+        } else {
+            throw new Error("Ambos argumentos deben ser instancias de Matrix para multiplicar elemento a elemento.");
+        }
+    }
+
 
     // Transpone la matriz original
     static transponer() {
@@ -243,6 +329,17 @@ class Matrix {
                 this.datos[i][j] = f(val);
             }
         }
+    }
+
+    static map(m, f) {
+        let resultado = new Matrix(m.filas, m.columnas);
+        for (let i = 0; i < m.filas; i++) {
+            for (let j = 0; j < m.columnas; j++) {
+                let val = m.datos[i][j];
+                resultado.datos[i][j] = f(val);
+            }
+        }
+        return resultado;
     }
 
 }
