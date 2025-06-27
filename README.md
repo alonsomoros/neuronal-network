@@ -50,7 +50,7 @@ Este repositorio contiene una implementación desde cero de una red neuronal en 
 
 ## 🧪 Funcionamiento y fórmulas
 
-![img.png](img.png)
+![img.png](rec/esquema_red_neuronal.png)
 
 
 ## 💡 Ideas futuras
