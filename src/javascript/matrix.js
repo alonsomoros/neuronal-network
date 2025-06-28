@@ -95,6 +95,8 @@ class Matrix {
                 }
             }
             return nuevaMatrix;
+        } else {
+            throw new Error("El argumento debe ser una instancia de Matrix o un número para sumar.");
         }
     }
 
@@ -122,6 +124,8 @@ class Matrix {
                 }
             }
             return nuevaMatrix;
+        } else {
+            throw new Error("El argumento debe ser una instancia de Matrix o un número para restar.");
         }
     }
 
@@ -148,6 +152,8 @@ class Matrix {
                     this.datos[i][j] += m;
                 }
             }
+        } else {
+            throw new Error("El argumento debe ser una instancia de Matrix o un número para sumar.");
         }
     }
 
@@ -174,6 +180,8 @@ class Matrix {
                     this.datos[i][j] -= m;
                 }
             }
+        } else {
+            throw new Error("El argumento debe ser una instancia de Matrix o un número para restar.");
         }
     }
 
@@ -218,6 +226,8 @@ class Matrix {
                 }
             }
             return nuevaMatrix;
+        } else {
+            throw new Error("Ambos argumentos deben ser instancias de Matrix o uno de ellos un número para multiplicar.");
         }
     }
 
@@ -251,11 +261,13 @@ class Matrix {
                     this.datos[i][j] *= m;
                 }
             }
+        } else {
+            throw new Error("El argumento debe ser una instancia de Matrix o un número para multiplicar.");
         }
     }
 
     // Multiplica dos matrices elemento a elemento
-    multiplicarElementwise(m) {
+    multiplicarMatrizElementwise(m) {
         let i;
         let j;
         if (m instanceof Matrix) {
@@ -264,6 +276,8 @@ class Matrix {
                     this.datos[i][j] *= m.datos[i][j];
                 }
             }
+        } else {
+            throw new Error("El argumento debe ser una instancia de Matrix para multiplicar elemento a elemento.");
         }
     }
 
@@ -290,7 +304,7 @@ class Matrix {
 
 
     // Transpone la matriz original
-    static transponer() {
+    transponer() {
         if (this instanceof Matrix) {
             const resultado = Array.from({length: this.columnas}, () => Array(this.filas).fill(0));
             for (let i = 0; i < this.filas; i++) {
@@ -298,10 +312,7 @@ class Matrix {
                     resultado[j][i] = this.datos[i][j];
                 }
             }
-            // Crear y retornar una nueva instancia de Matrix
-            const nuevaMatrix = new Matrix(this.columnas, this.filas);
-            nuevaMatrix.datos = resultado;
-            return nuevaMatrix;
+            this.datos = resultado;
         } else {
             throw new Error("Debe ser una matriz para calcular su transpuesta");
         }

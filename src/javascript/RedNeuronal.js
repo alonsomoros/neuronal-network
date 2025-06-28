@@ -127,7 +127,7 @@ class RedNeuronal {
 
         // 2º Gradiente
         let gradiente_salidas = Matrix.map(salidas, derivadaSigmoide); // [σ′(zOutput)] - [2x1]
-        gradiente_salidas.multiplicarElementwise(error_salidas); // [(T - O)] σ′(zOutput) - [2x1] (Element-wise)
+        gradiente_salidas.multiplicarMatrizElementwise(error_salidas); // [(T - O)] σ′(zOutput) - [2x1] (Element-wise)
         // 3º Multiplicar por la tasa de aprendizaje
         gradiente_salidas.multiplicar(this.tasa_aprendizaje); // [η] (T - O) σ′(zO)
 
@@ -154,7 +154,7 @@ class RedNeuronal {
 
         // 3º Gradiente de la capa oculta
         let gradiente_ocultos = Matrix.map(salidasOculto, derivadaSigmoide); // [σ′(zH)] - [2x1]
-        gradiente_ocultos.multiplicarElementwise(error_ocultos); // [(W, ho)ᵀ (T - O) σ′(zO)] σ′(zH) // - [2x1] (Element-wise)
+        gradiente_ocultos.multiplicarMatrizElementwise(error_ocultos); // [(W, ho)ᵀ (T - O) σ′(zO)] σ′(zH) // - [2x1] (Element-wise)
         // 4º Multiplicar por la tasa de aprendizaje
         gradiente_ocultos.multiplicar(this.tasa_aprendizaje); // [η] (W, ho)ᵀ (T - O) σ′(zO) σ′(zH)
 
@@ -170,8 +170,6 @@ class RedNeuronal {
         this.bias_ocultos.sumar(gradiente_ocultos);
 
         // ------ FIN DE BACKPROPAGATION ------
-
-
     }
 
     imprimirDatosYError(salidas, objetivos, output_errors) {
