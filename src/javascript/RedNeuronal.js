@@ -49,7 +49,7 @@ class RedNeuronal {
         this.tasa_aprendizaje = 0.1; // Tasa de aprendizaje
     }
 
-    feedforward(entrada_array) {
+    predict(entrada_array) {
         // Convertir el array de entrada a una matriz
         let entradas = Matrix.fromArray(entrada_array);
 
@@ -189,5 +189,9 @@ class RedNeuronal {
         if (fila === columna) {
             return x * 2;
         }
+    }
+
+    setTasaAprendizaje(tasa) {
+        this.tasa_aprendizaje = tasa; // Actualiza la tasa de aprendizaje
     }
 }
