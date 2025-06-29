@@ -170,6 +170,20 @@ class RedNeuronal {
         this.bias_ocultos.sumar(gradiente_ocultos);
 
         // ------ FIN DE BACKPROPAGATION ------
+
+        // ---------- CALCULO DEL MSE ----------
+
+        let mseMatriz = Matrix.multiplicarMatrices(error_salidas, error_salidas); // MSE = (T - O)² - [2x1]
+        let mse = Matrix.sumaElementosMatriz(mseMatriz); // MSE = Σ(T - O)²
+        mse /= objetivos.toArray().length; // MSE = Σ(T - O)² / N
+
+        let correctos = 0;
+        for (let i = 0; i < salidas.toArray().length; i++) {
+            let clasificacionBinaria = salidas.toArray()[i] > 0.5 ? 1 : 0;
+            if (clasificacionBinaria === objetivos.toArray()[i]) correctos++;
+        }
+
+        return [mse, correctos];
     }
 
     imprimirDatosYError(salidas, objetivos, output_errors) {
