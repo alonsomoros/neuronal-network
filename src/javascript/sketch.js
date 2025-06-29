@@ -14,14 +14,17 @@ let datos_test = [ // XOR
 
 let redNeuronal;
 
+let batchSize = 100; // Tamaño del batch para el entrenamiento
 let epochs = 100000;
+let filtro_epochs = 10000; // Cada cuántas epochs se imprime el resultado
 
 let ta_slider;
 
 function setup() {
     createCanvas(400, 400);
 
-    redNeuronal = new RedNeuronal(2, 4, 1);
+    redNeuronal = new RedNeuronal(2, 2, 1);
+    redNeuronal.setTasaAprendizaje(0.01);
     pruebaRedNeuronal();
 
     // ta_slider = createSlider(0, 0.5, 0.1, 0.01);
@@ -50,8 +53,20 @@ function draw() {
 
 function pruebaRedNeuronal() {
     for (let i = 0; i < epochs; i++) {
-        let data = random(datos_entrenamiento);
-        redNeuronal.entrenar(data.entradas, data.objetivo);
+        let batch = [];
+        for (let j = 0; j < batchSize; j++) { // Tamaño del batch
+            batch.push(random(datos_entrenamiento));
+        }
+        let sumMSE = 0;
+        let sumCorrectos = 0;
+        for (let data of batch) {
+            let resultadoEntrenamiento = redNeuronal.entrenar(data.entradas, data.objetivo); // MSE y Correctos
+            sumCorrectos += resultadoEntrenamiento[1];
+            sumMSE += resultadoEntrenamiento[0];
+        }
+        if (i % filtro_epochs === 0) {
+            console.log(`Epoch: ${i}, MSE: ${sumMSE / batchSize}\nAccuracy: ${sumCorrectos / batchSize}\nCorrectos: ${sumCorrectos} de ${batchSize}`);
+        }
     }
 
 
