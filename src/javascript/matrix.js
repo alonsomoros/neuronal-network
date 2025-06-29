@@ -336,6 +336,20 @@ class Matrix {
         }
     }
 
+    static sumaElementosMatriz(m) {
+        if (m instanceof Matrix) {
+            let suma = 0;
+            for (let i = 0; i < m.filas; i++) {
+                for (let j = 0; j < m.columnas; j++) {
+                    suma += m.datos[i][j];
+                }
+            }
+            return suma;
+        } else {
+            throw new Error("El argumento debe ser una instancia de Matrix para sumar sus elementos.");
+        }
+    }
+
     print() {
         console.table(this.datos);
     }
