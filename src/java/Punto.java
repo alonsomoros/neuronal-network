@@ -6,7 +6,7 @@ import static processing.core.PApplet.map;
 public class Punto {
     public float x;
     public float y;
-    public int etiqueta;
+    public Double etiqueta;
 
     public PApplet applet;
 
@@ -18,9 +18,9 @@ public class Punto {
         float lineaY = Main.function(x);
 
         if (y > lineaY) {
-            etiqueta = 1; // Clase Positiva
+            etiqueta = 1.0; // Clase Positiva
         } else {
-            etiqueta = -1; // Clase Negativa
+            etiqueta = -1.0; // Clase Negativa
         }
     }
 
@@ -29,9 +29,9 @@ public class Punto {
         this.x = x;
         this.y = y;
         if (x > y) {
-            etiqueta = 1; // Clase positiva
+            etiqueta = 1.0; // Clase positiva
         } else {
-            etiqueta = -1; // Clase negativa
+            etiqueta = -1.0; // Clase negativa
         }
     }
 
@@ -47,11 +47,11 @@ public class Punto {
     public void showEtiqueta(PApplet applet, Perceptron perceptron, Punto punto) {
         // Usar los puntos generados para la entrada del perceptrón
         float[] entradas = {punto.x, punto.y};
-        int objetivo = punto.etiqueta;
+        Double objetivo = punto.etiqueta;
 
         // Predecir la etiqueta de los puntos
-        int intento = perceptron.predecirSalida(entradas);
-        if (intento == objetivo) {
+        Double intento = perceptron.predecirSalida(entradas);
+        if (intento.equals(objetivo)) {
             applet.fill(0, 255, 0);
         } else {
             applet.fill(255, 0, 0);

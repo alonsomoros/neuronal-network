@@ -18,7 +18,7 @@ public class Main extends PApplet {
     }
 
     public void setup() {
-        perceptron = new Perceptron(2, 0.1f);
+        perceptron = new Perceptron(2, 0.1);
 
         for (int i = 0; i < puntos.length; i++) {
             puntos[i] = new Punto(this);
@@ -52,7 +52,7 @@ public class Main extends PApplet {
     private void entrenamiento() {
         Punto entrenamiento = puntos[entrenamientoIndex];
         float[] entradas = {entrenamiento.x, entrenamiento.y};
-        int objetivo = entrenamiento.etiqueta;
+        Double objetivo = entrenamiento.etiqueta;
         perceptron.entrenamiento(entradas, objetivo);
         entrenamientoIndex++;
         if (entrenamientoIndex >= puntos.length) {
@@ -61,26 +61,28 @@ public class Main extends PApplet {
     }
 
     private void dibujarLineaDecision() {
-        Punto p3 = new Punto(this, -1, perceptron.predecirY(-1));
-        Punto p4 = new Punto(this, 1, perceptron.predecirY(1));
+        Punto p3 = new Punto(this, -1.0f, perceptron.predecirY(-1f));
+        Punto p4 = new Punto(this, 1.0f, perceptron.predecirY(1f));
         line(p3.getXpixel(), p3.getYpixel(), p4.getXpixel(), p4.getYpixel());
     }
 
     private void dibujarFuncionLineal() {
-        Punto p1 = new Punto(this, -1, function(-1));
-        Punto p2 = new Punto(this, 1, function(1));
+        Punto p1 = new Punto(this, -1.0f, function(-1.0f));
+        Punto p2 = new Punto(this, 1.0f, function(1.0f));
         line(p1.getXpixel(), p1.getYpixel(), p2.getXpixel(), p2.getYpixel());
     }
 
     // Y = MX + N
     public static float function(float x) {
-        return - (0.3f * x) - (0.2f);
+        float valor_m = -0.3f; // Pendiente
+        float valor_n = -0.2f; // Intersección con el eje Y
+        return FuncionesDeActivacion.funcionLineal(valor_m,valor_n, x);
     }
 
     public void mousePressed() {
         for (Punto punto : puntos) {
             float[] entradas = {punto.x, punto.y};
-            int objetivo = punto.etiqueta;
+            Double objetivo = punto.etiqueta;
             perceptron.entrenamiento(entradas, objetivo);
         }
         System.out.println("------------------------------------------------------------");

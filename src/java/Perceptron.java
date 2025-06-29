@@ -4,18 +4,18 @@ import java.util.Random;
 
 // salida = ∑ wi xi + BIAS
 public class Perceptron {
-    float[] pesos;
+    Double[] pesos;
 
-    float bias;
+    Double bias;
 
-    float tasaAprendizaje;
+    Double tasaAprendizaje;
 
     Random random;
-    public Perceptron(int numeroEntradas, float bias) {
+    public Perceptron(int numeroEntradas, Double bias) {
         this.bias = bias;
-        this.tasaAprendizaje = 0.2f;
+        this.tasaAprendizaje = 0.2;
         this.random = new Random();
-        this.pesos = new float[numeroEntradas];
+        this.pesos = new Double[numeroEntradas];
 
         // Inicializar pesos aleatorios
         inicializarPesos();
@@ -24,33 +24,26 @@ public class Perceptron {
     private void inicializarPesos() {
         // Inicializar los pesos indicados por números aleatorios entre -1 y 1
         for (int i = 0; i < this.pesos.length; i++) {
-            this.pesos[i] = this.random.nextFloat() * 2 - 1; // -1 , 1
+            this.pesos[i] = (double) (this.random.nextFloat() * 2 - 1); // -1 , 1
         }
     }
 
-    public int predecirSalida(float[] entradas) {
-        float sum = 0;
+    public Double predecirSalida(float[] entradas) {
+        double sum = 0;
         for (int i = 0; i < entradas.length; i++) {
             sum += entradas[i] * pesos[i];
         }
         sum += bias; // Añadir el bias a la suma
 
-        return funcionActivacion_Signo(sum); // Función de Activación
+        return FuncionesDeActivacion.escalon(sum); // Función de Activación
     }
 
-    private int funcionActivacion_Signo(float n) {
-        if (n >= 0) {
-            return 1;
-        } else {
-            return -1;
-        }
-    }
 
-    public void entrenamiento(float[] entradas, int objetivo) {
-        int salida = predecirSalida(entradas);
+    public void entrenamiento(float[] entradas, Double objetivo) {
+        double salida = predecirSalida(entradas);
 
         // Calcular el error
-        float error = objetivo - salida;
+        double error = objetivo - salida;
 
         if (error == 0) {
             System.out.println("---");
@@ -72,13 +65,13 @@ public class Perceptron {
         }
     }
 
-    private void imprimirEntradasPre(float[] entradas, int objetivo) {
+    private void imprimirEntradasPre(float[] entradas, Double objetivo) {
         System.out.println("Entradas: " + java.util.Arrays.toString(entradas));
         System.out.println("Pesos: " + java.util.Arrays.toString(pesos));
         System.out.println("Objetivo: " + objetivo + " (X > Y = 1)");
     }
 
-    public void imprimirError(float error, int objetivo) {
+    public void imprimirError(Double error, Double objetivo) {
         System.out.println("Salida: " + objetivo + " -> Error: " + error);
         System.out.println("---");
     }
@@ -86,17 +79,17 @@ public class Perceptron {
     public void resetPesosRandom() {
         // Reiniciar los pesos a valores aleatorios
         for (int i = 0; i < this.pesos.length; i++) {
-            this.pesos[i] = this.random.nextFloat() * 2 - 1; // -1 , 1
+            this.pesos[i] = this.random.nextDouble() * 2 - 1; // -1 , 1
         }
         // Reiniciar el bias a un valor aleatorio
-        this.bias = this.random.nextFloat() * 2 - 1; // -1 , 1
+        this.bias = this.random.nextDouble() * 2 - 1; // -1 , 1
     }
 
     public float predecirY(float x) {
-        float w0 = pesos[0];
-        float w1 = pesos[1];
+        Double w0 = pesos[0];
+        Double w1 = pesos[1];
 
         // Ecuación de la recta: y = -(w0/w1) * x - (bias/w1)
-        return -(w0 / w1) * x - (this.bias / w1); // Ecuación de la recta
+        return (float) (-(w0 / w1) * x - (this.bias / w1)); // Ecuación de la recta
     }
 }
