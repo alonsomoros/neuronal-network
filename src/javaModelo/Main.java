@@ -1,4 +1,4 @@
-package java;
+package javaModelo;
 
 import processing.core.PApplet;
 import processing.event.KeyEvent;
@@ -10,7 +10,7 @@ public class Main extends PApplet {
     int entrenamientoIndex = 0;
 
     public static void main(String[] args) {
-        PApplet.main("java.Main");
+        PApplet.main("javaModelo.Main");
     }
 
     public void settings() {
