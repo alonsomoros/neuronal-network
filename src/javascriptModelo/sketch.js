@@ -16,7 +16,7 @@ let redNeuronal;
 
 let batchSize = 100; // Tamaño del batch para el entrenamiento
 let epochs = 100000;
-let filtro_epochs = 10000; // Cada cuántas epochs se imprime el resultado
+let filtro_epochs = epochs / 10; // Cada cuántas epochs se imprime el resultado
 
 let ta_slider;
 
@@ -24,7 +24,7 @@ function setup() {
     createCanvas(400, 400);
 
     redNeuronal = new RedNeuronal(2, 2, 1);
-    redNeuronal.setTasaAprendizaje(0.01);
+    redNeuronal.setTasaAprendizaje(0.15);
     pruebaRedNeuronal();
 
     // ta_slider = createSlider(0, 0.5, 0.1, 0.01);

@@ -123,11 +123,11 @@ class RedNeuronal {
 
         // 1º Calcular el error de las salidas
         // ERROR = OBJETIVO - SALIDA
-        let error_salidas = Matrix.restarMatrices(objetivos, salidas); // [(T - O)] - [2x1]
+        let error_salidas = Matrix.restarMatrices(objetivos, salidas); // [(T - O)] - [1x1]
 
         // 2º Gradiente
-        let gradiente_salidas = Matrix.map(salidas, derivadaSigmoide); // [σ′(zOutput)] - [2x1]
-        gradiente_salidas.multiplicarMatrizElementwise(error_salidas); // [(T - O)] σ′(zOutput) - [2x1] (Element-wise)
+        let gradiente_salidas = Matrix.map(salidas, derivadaSigmoide); // [σ′(zOutput)] - [1x1]
+        gradiente_salidas.multiplicarMatrizElementwise(error_salidas); // [(T - O)] σ′(zOutput) - [1x1] (Element-wise)
         // 3º Multiplicar por la tasa de aprendizaje
         gradiente_salidas.multiplicar(this.tasa_aprendizaje); // [η] (T - O) σ′(zO)
 
@@ -146,7 +146,7 @@ class RedNeuronal {
         //  <[ Input <- Hidden ]> = ΔW,ih = η (W,ho)ᵀ (T - O) σ′(zO) * σ′(zH) Iᵀ
 
         // 1º Calcular la traspuesta de los pesos de la capa oculta → salidas
-        let pesos_ocultos_a_salidas_transpuestos = Matrix.transponerMatriz(this.pesos_ocultos_a_salidas); // [W,ho]ᵀ - [2x2]
+        let pesos_ocultos_a_salidas_transpuestos = Matrix.transponerMatriz(this.pesos_ocultos_a_salidas); // [W,ho]ᵀ - [2x1]
 
         // 2º Calcular el error de las salidas de la capa oculta
         // ERROR = (W, ho)ᵀ (T - O) σ′(zO)
@@ -173,7 +173,7 @@ class RedNeuronal {
 
         // ---------- CALCULO DEL MSE ----------
 
-        let mseMatriz = Matrix.multiplicarMatrices(error_salidas, error_salidas); // MSE = (T - O)² - [2x1]
+        let mseMatriz = Matrix.multiplicarMatrices(error_salidas, error_salidas); // MSE = (T - O)² - [1x1]
         let mse = Matrix.sumaElementosMatriz(mseMatriz); // MSE = Σ(T - O)²
         mse /= objetivos.toArray().length; // MSE = Σ(T - O)² / N
 
