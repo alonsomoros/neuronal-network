@@ -56,6 +56,11 @@ Este repositorio contiene una implementación desde cero de una red neuronal en 
 
 ![img.png](rec/esquema_red_neuronal.png)
 
+## 📊 Prueba
+
+```bash
+java -jar rec/ejecutables/red_neuronal-1.0.jar
+```
 
 ## 💡 Ideas futuras
 
