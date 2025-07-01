@@ -1,4 +1,4 @@
-package main.java.javaModelo;
+package javamodelo;
 
 public class RedNeuronal {
 

@@ -1,4 +1,4 @@
-package main.java.javaModelo;
+package javamodelo;
 
 import processing.core.PApplet;
 
@@ -12,7 +12,7 @@ public class Main extends PApplet {
     int entrenamientoIndex = 0;
 
     RedNeuronal redNeuronal;
-    int batchSize = 100; // Tamaño del batch para el entrenamiento
+    int batchSize = 1000; // Tamaño del batch para el entrenamiento
     int epochs = 100;
     int filtro_epochs = epochs / 10; // Cada cuántas epochs se imprime el resultado
     Double[][][] datos_entrenamiento = {
@@ -30,7 +30,7 @@ public class Main extends PApplet {
     };
 
     public static void main(String[] args) {
-        PApplet.main("javaModelo.Main");
+        PApplet.main("javamodelo.Main");
     }
 
     public void settings() {
