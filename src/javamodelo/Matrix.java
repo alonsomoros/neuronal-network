@@ -45,7 +45,7 @@ public class Matrix {
         return matriz;
     }
 
-    public static Matrix fromFloatArray(float[] array) {
+    public static Matrix fromFloatArray(Float[] array) {
         Matrix matriz = new Matrix(array.length, 1);
         for (int i = 0; i < array.length; i++) {
             matriz.datos[i][0] = array[i];
@@ -63,11 +63,11 @@ public class Matrix {
         return array;
     }
 
-    public double[] toArrayUnidimensional() {
-        double[] array = new double[this.filas];
+    public Float[] toArrayUnidimensional() {
+        Float[] array = new Float[this.filas];
         for (int i = 0; i < this.filas; i++) {
             for (int j = 0; j < this.columnas; j++) {
-                array[i] = this.datos[i][j];
+                array[i] = (float) this.datos[i][j];
             }
         }
         return array;
@@ -423,22 +423,43 @@ public class Matrix {
         }
     }
 
-    public void map(Function<Double, Double> f) {
+    public void mapFloat(Function<Float, Float> f) {
         // this.map(val -> val * 2);
         for (int i = 0; i < this.filas; i++) {
             for (int j = 0; j < this.columnas; j++) {
-                double val = this.datos[i][j];
+                float val = (float) this.datos[i][j];
+                this.datos[i][j] = f.apply(val);
+            }
+        }
+    }
+
+    public void mapDouble(Function<Double, Double> f) {
+        // this.map(val -> val * 2);
+        for (int i = 0; i < this.filas; i++) {
+            for (int j = 0; j < this.columnas; j++) {
+                double val = (float) this.datos[i][j];
                 this.datos[i][j] = f.apply(val);
             }
         }
     }
 
     // Matrix = Matrix.map(m, val -> val * 2);
-    public static Matrix map(Matrix m, Function<Double, Double> f) {
+    public static Matrix mapDouble(Matrix m, Function<Double, Double> f) {
         Matrix resultado = new Matrix(m.filas, m.columnas);
         for (int i = 0; i < m.filas; i++) {
             for (int j = 0; j < m.columnas; j++) {
                 double val = m.datos[i][j];
+                resultado.datos[i][j] = f.apply(val);
+            }
+        }
+        return resultado;
+    }
+
+    public static Matrix mapFloat(Matrix m, Function<Float, Float> f) {
+        Matrix resultado = new Matrix(m.filas, m.columnas);
+        for (int i = 0; i < m.filas; i++) {
+            for (int j = 0; j < m.columnas; j++) {
+                float val = (float) m.datos[i][j];
                 resultado.datos[i][j] = f.apply(val);
             }
         }

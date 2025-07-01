@@ -28,10 +28,10 @@ public class Perceptron {
         }
     }
 
-    public Double predecirSalida(float[] entradas) {
-        double sum = 0;
+    public Float predict(Float[] entradas) {
+        float sum = 0;
         for (int i = 0; i < entradas.length; i++) {
-            sum += entradas[i] * pesos[i];
+            sum += (float) (entradas[i] * pesos[i]);
         }
         sum += bias; // Añadir el bias a la suma
 
@@ -39,11 +39,11 @@ public class Perceptron {
     }
 
 
-    public void entrenamiento(float[] entradas, Double objetivo) {
-        double salida = predecirSalida(entradas);
+    public void entrenar(Float[] entradas, Float objetivo) {
+        Float salida = predict(entradas);
 
         // Calcular el error
-        double error = objetivo - salida;
+        Float error = objetivo - salida;
 
         if (error == 0) {
             System.out.println("---");
@@ -65,13 +65,13 @@ public class Perceptron {
         }
     }
 
-    private void imprimirEntradasPre(float[] entradas, Double objetivo) {
+    private void imprimirEntradasPre(Float[] entradas, Float objetivo) {
         System.out.println("Entradas: " + java.util.Arrays.toString(entradas));
         System.out.println("Pesos: " + java.util.Arrays.toString(pesos));
         System.out.println("Objetivo: " + objetivo + " (X > Y = 1)");
     }
 
-    public void imprimirError(Double error, Double objetivo) {
+    public void imprimirError(Float error, Float objetivo) {
         System.out.println("Salida: " + objetivo + " -> Error: " + error);
         System.out.println("---");
     }
@@ -85,7 +85,7 @@ public class Perceptron {
         this.bias = this.random.nextDouble() * 2 - 1; // -1 , 1
     }
 
-    public float predecirY(float x) {
+    public float predecirY(Float x) {
         Double w0 = pesos[0];
         Double w1 = pesos[1];
 

@@ -3,6 +3,7 @@ package javamodelo;
 import processing.core.PApplet;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 
@@ -15,18 +16,18 @@ public class Main extends PApplet {
     int batchSize = 1000; // Tamaño del batch para el entrenamiento
     int epochs = 100;
     int filtro_epochs = epochs / 10; // Cada cuántas epochs se imprime el resultado
-    Double[][][] datos_entrenamiento = {
-            {{0d, 0d}, {0d}},
-            {{0d, 1d}, {1d}},
-            {{1d, 0d}, {1d}},
-            {{1d, 1d}, {0d}}
+    Float[][][] datos_entrenamiento = {
+            {{0f, 0f}, {0f}},
+            {{0f, 1f}, {1f}},
+            {{1f, 0f}, {1f}},
+            {{1f, 1f}, {0f}}
     };
 
-    Double[][][] datos_test = {
-            {{0d, 0d}, {0d}},
-            {{0d, 1d}, {1d}},
-            {{1d, 0d}, {1d}},
-            {{1d, 1d}, {0d}}
+    Float[][][] datos_test = {
+            {{0f, 0f}, {0f}},
+            {{0f, 1f}, {1f}},
+            {{1f, 0f}, {1f}},
+            {{1f, 1f}, {0f}}
     };
 
     public static void main(String[] args) {
@@ -44,7 +45,7 @@ public class Main extends PApplet {
         textSize(16);
 
 //        setUpPerceptron();
-        setUpRedNeuronal();
+        setUpRedNeuronalXOR();
     }
 
     public void draw() {
@@ -54,21 +55,21 @@ public class Main extends PApplet {
 
         // Dibujar la función lineal
 //        dibujarPruebaPerceptronSimple();
-        dibujarPruebaRedNeuronal();
+        dibujarPruebaRedNeuronalXOR();
     }
 
-    private void entrenamientoRedNeuronal() {
+    private void entrenamientoRedNeuronalXOR() {
         for (int i = 0; i < epochs; i++) {
-            ArrayList<Double[][]> batch = new ArrayList<>();
+            ArrayList<Float[][]> batch = new ArrayList<>();
             for (int j = 0; j < batchSize; j++) { // Tamaño del batch
                 batch.add(datos_entrenamiento[new Random().nextInt(datos_entrenamiento.length)]);
             }
-            double sumMSE = 0d;
-            double sumCorrectos = 0d;
-            for (Double[][] data : batch) {
-                Double[] entradas = data[0]; // [e1, e2]
-                Double[] objetivos = data[1]; // [obj1]
-                double[] resultadoEntrenamiento = redNeuronal.entrenar(entradas, objetivos); // MSE y Correctos
+            float sumMSE = 0f;
+            float sumCorrectos = 0f;
+            for (Float[][] data : batch) {
+                Float[] entradas = data[0]; // [e1, e2]
+                Float[] objetivos = data[1]; // [obj1]
+                Float[] resultadoEntrenamiento = redNeuronal.entrenar(entradas, objetivos); // MSE y Correctos
                 sumCorrectos += resultadoEntrenamiento[1];
                 sumMSE += resultadoEntrenamiento[0];
             }
@@ -79,7 +80,7 @@ public class Main extends PApplet {
 
     }
 
-    private void dibujarPruebaRedNeuronal() {
+    private void dibujarPruebaRedNeuronalXOR() {
         int resolution = 10;
         int cols = width / resolution;
         int rows = height / resolution;
@@ -88,11 +89,11 @@ public class Main extends PApplet {
                 float x = (float) i / cols;
                 float y = (float) j / rows;
 //                System.out.println("x: " + x + ", y: " + y);
-                float[] inputs = {x, y};
-                double[] prediction = redNeuronal.predict(inputs);
+                Float[] inputs = {x, y};
+                Float[] prediction = redNeuronal.predict(inputs);
 //                System.out.println("Prediction: " + prediction[0] + " que es de color " + Color.getColor("Color", (int) (prediction[0] * 255)));
                 stroke(0);
-                fill((float) (prediction[0] * 255));
+                fill((prediction[0] * 255));
                 rect(i * resolution, j * resolution, resolution, resolution);
             }
         }
@@ -112,14 +113,14 @@ public class Main extends PApplet {
             punto.showEtiqueta(this, perceptron, punto);
         }
         // Aprovecha el bucle de dibujo para entrenar el perceptrón
-        entrenamientoPerceptron();
+        entrenamientoPerceptronSimple();
     }
 
-    private void entrenamientoPerceptron() {
+    private void entrenamientoPerceptronSimple() {
         Punto entrenamiento = puntos[entrenamientoIndex];
-        float[] entradas = {entrenamiento.x, entrenamiento.y};
-        Double objetivo = entrenamiento.etiqueta;
-        perceptron.entrenamiento(entradas, objetivo);
+        Float[] entradas = {entrenamiento.x, entrenamiento.y};
+        Float objetivo = entrenamiento.etiqueta;
+        perceptron.entrenar(entradas, objetivo);
         entrenamientoIndex++;
         if (entrenamientoIndex >= puntos.length) {
             entrenamientoIndex = 0;
@@ -165,9 +166,22 @@ public class Main extends PApplet {
 //        super.keyPressed(event);
 //    }
 
-    private void setUpRedNeuronal() {
+    private void setUpRedNeuronalXOR() {
         redNeuronal = new RedNeuronal(2, 4, 1);
-        entrenamientoRedNeuronal();
+
+        System.out.println("Antes del entrenamiento: ");
+        for (Float[][] floats : datos_test) {
+            Float[] resul = redNeuronal.predict(floats[0]);
+            System.out.println(Arrays.toString(resul));
+        }
+
+        entrenamientoRedNeuronalXOR();
+
+        System.out.println("Después del entrenamiento: ");
+        for (Float[][] floats : datos_test) {
+            Float[] resul = redNeuronal.predict(floats[0]);
+            System.out.println(Arrays.toString(resul));
+        }
     }
 
     private void setUpPerceptron() {
