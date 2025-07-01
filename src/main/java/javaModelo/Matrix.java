@@ -1,4 +1,4 @@
-package javaModelo;
+package main.java.javaModelo;
 
 import java.util.Arrays;
 import java.util.function.Function;
@@ -29,7 +29,23 @@ public class Matrix {
     }
 
     // Crea una matriz a partir de un array unidimensional
-    public static Matrix fromArray(int[] array) {
+    public static Matrix fromIntArray(int[] array) {
+        Matrix matriz = new Matrix(array.length, 1);
+        for (int i = 0; i < array.length; i++) {
+            matriz.datos[i][0] = array[i];
+        }
+        return matriz;
+    }
+
+    public static Matrix fromDoubleArray(Double[] array) {
+        Matrix matriz = new Matrix(array.length, 1);
+        for (int i = 0; i < array.length; i++) {
+            matriz.datos[i][0] = array[i];
+        }
+        return matriz;
+    }
+
+    public static Matrix fromFloatArray(float[] array) {
         Matrix matriz = new Matrix(array.length, 1);
         for (int i = 0; i < array.length; i++) {
             matriz.datos[i][0] = array[i];
@@ -42,6 +58,16 @@ public class Matrix {
         for (int i = 0; i < this.filas; i++) {
             for (int j = 0; j < this.columnas; j++) {
                 array[i][j] = this.datos[i][j];
+            }
+        }
+        return array;
+    }
+
+    public double[] toArrayUnidimensional() {
+        double[] array = new double[this.filas];
+        for (int i = 0; i < this.filas; i++) {
+            for (int j = 0; j < this.columnas; j++) {
+                array[i] = this.datos[i][j];
             }
         }
         return array;
@@ -325,6 +351,9 @@ public class Matrix {
 
     // Transpone la matriz original
     public void transponer() {
+        if (this.filas == 1 && this.columnas == 1) {
+            return;
+        }
         double[][] resultado = new double[this.filas][this.columnas];
         for (int k = 0; k < this.filas; k++) {
             for (int h = 0; h < this.columnas; h++) {
@@ -342,9 +371,12 @@ public class Matrix {
     // Instancia la traspuesta de la matriz
     public static Matrix transponerMatriz(Matrix m) {
         if (m != null) {
-            double[][] resultado = new double[m.filas][m.columnas];
-            for (int k = 0; k < m.filas; k++) {
-                for (int h = 0; h < m.columnas; h++) {
+            if (m.filas == 1 && m.columnas == 1) {
+                return m;
+            }
+            double[][] resultado = new double[m.columnas][m.filas];
+            for (int k = 0; k < m.columnas; k++) {
+                for (int h = 0; h < m.filas; h++) {
                     resultado[k][h] = 0;
                 }
             }
@@ -411,5 +443,29 @@ public class Matrix {
             }
         }
         return resultado;
+    }
+
+    public int getFilas() {
+        return filas;
+    }
+
+    public void setFilas(int filas) {
+        this.filas = filas;
+    }
+
+    public int getColumnas() {
+        return columnas;
+    }
+
+    public void setColumnas(int columnas) {
+        this.columnas = columnas;
+    }
+
+    public double[][] getDatos() {
+        return datos;
+    }
+
+    public void setDatos(double[][] datos) {
+        this.datos = datos;
     }
 }

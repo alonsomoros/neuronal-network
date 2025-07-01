@@ -1,4 +1,4 @@
-package javaModelo;
+package main.java.javaModelo;
 
 public class RedNeuronal {
 
@@ -27,9 +27,9 @@ public class RedNeuronal {
         this.tasa_aprendizaje = 0.1; // Tasa de aprendizaje por defecto
     }
 
-    public double[][] predict(int[] entrada_array) {
+    public double[] predict(float[] entrada_array) {
         // Convertir el array de entrada a una matriz
-        Matrix entradas = Matrix.fromArray(entrada_array);
+        Matrix entradas = Matrix.fromFloatArray(entrada_array);
 
         // Calcular la capa oculta
         Matrix salidaOculto = Matrix.multiplicarMatrices(this.pesos_entradas_a_ocultos, entradas); // Se pone al revés para que porEj 2x1 (inputs) * 4x2 (pesos) sea 4x2·2x1 -> dando una 4x1
@@ -43,10 +43,10 @@ public class RedNeuronal {
         salidaFinal.map(FuncionesDeActivacion::sigmoide); // Aplica la función de activación a la matriz
 
         // Convertir la salida a un array
-        return salidaFinal.toArray();
+        return salidaFinal.toArrayUnidimensional();
     }
 
-    public double[] entrenar(int[] entradasArray, int[] objetivosArray) {
+    public double[] entrenar(Double[] entradasArray, Double[] objetivosArray) {
         /* Para la prueba:
         let redNeuronal = new RedNeuronal(2, 2, 2);
         let entradas = [1, 0];
@@ -79,8 +79,8 @@ public class RedNeuronal {
         // ------ INICIO DE FEED FORWARD ------
 
         // Convertir el array de entradas y objetivos a una matriz
-        Matrix entradas = Matrix.fromArray(entradasArray);
-        Matrix objetivos = Matrix.fromArray(objetivosArray);
+        Matrix entradas = Matrix.fromDoubleArray(entradasArray);
+        Matrix objetivos = Matrix.fromDoubleArray(objetivosArray);
 
         // Calcular la capa oculta
         Matrix salidasOculto = Matrix.multiplicarMatrices(this.pesos_entradas_a_ocultos, entradas); // Se pone al revés para que porEj 2x1 (inputs) * 4x2 (pesos) sea 4x2·2x1 -> dando una 4x1

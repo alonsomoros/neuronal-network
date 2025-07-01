@@ -1,4 +1,4 @@
-package javaModelo;
+package main.java.javaModelo;
 
 import processing.core.PApplet;
 import static processing.core.PApplet.map;

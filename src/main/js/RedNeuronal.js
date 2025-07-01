@@ -63,6 +63,7 @@ class RedNeuronal {
         salidaFinal.sumar(this.bias_salidas);
 
         salidaFinal.map(sigmoide); // Aplica la función de activación a la matriz
+        salidaFinal.print();
 
         // Convertir la salida a un array
         return salidaFinal.toArray();

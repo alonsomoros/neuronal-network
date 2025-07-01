@@ -1,4 +1,4 @@
-package javaModelo;
+package main.java.javaModelo;
 
 public class FuncionesDeActivacion {
     public static Double sigmoide(Double x) { // Ya no se usa sigmoid se usa porEj ReLu

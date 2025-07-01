@@ -42,6 +42,7 @@ function draw() {
         for (let j = 0; j < rows; j++) {
             let x = i / cols;
             let y = j / rows;
+            console.log(`Iteración i: ${i}, j: ${j} -> x: ${x}, y: ${y}`);
             let inputs = [x, y];
             let prediction = redNeuronal.predict(inputs);
             stroke(0);
