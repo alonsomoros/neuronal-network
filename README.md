@@ -17,9 +17,9 @@ Este repositorio contiene una implementación desde cero de una red neuronal en 
 
 ## 🛠️ Tecnologías utilizadas
 
-- **Lenguaje:** Java
+- **Lenguaje:** Java y JavaScript
 - **IDE:** IntelliJ IDEA
-- **Dependencias:** Ninguna (implementación 100% desde cero)
+- **Dependencias:** Java processing (p5)
 
 ---
 
@@ -27,15 +27,20 @@ Este repositorio contiene una implementación desde cero de una red neuronal en 
 
 ```
 /src
-├── java
+├── javamodelo
 │   ├── Main.java
 │   ├── Perceptron.java
-│   └── Punto.java
-├── javascript
+│   ├── Punto.java
+│   ├── RedNeuronal.java
+│   ├── Matrix.java
+│   └── FuncionesDeActivacion.java
+│
+├── js
 │   ├── index.html
 │   ├── matrix.js
 │   ├── RedNeuronal.js
-│   └── sketch.js
+│   ├── sketch.js
+│   └── pruebaMatrices.js
 /rec
 └── esquema_red_neuronal.png
 ```
@@ -58,15 +63,22 @@ Este repositorio contiene una implementación desde cero de una red neuronal en 
 
 ## 📊 Prueba
 
-```bash
-java -jar rec/ejecutables/red_neuronal-1.0.jar
+#### Descargar en Google Drive:
+- [red_neuronal-1.0.jar](https://drive.google.com/file/d/1J6UBHd_In5-A8cpG_sAto0-rRcQJQh-b/view?usp=drive_link)
+- [red_neuronal-1.0.zip](https://drive.google.com/file/d/1ZfCAtxRAkUYRgs2b0cimTeczp6Jlz8Kh/view?usp=drive_link)
+
+
+Coloca el archivo `red_neuronal-1.0.jar` en el directorio donde ejecutarás el comando y utiliza:
+
+```shell
+java -jar red_neuronal-1.0.jar
 ```
 
 ## 💡 Ideas futuras
 
 - Visualización del aprendizaje (gráficas, evolución del error...)
 
-- Interfaz gráfica (JavaFX)
+- Interfaz gráfica (Processing p5)
 
 - Integración con entornos simulados
 

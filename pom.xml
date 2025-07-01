@@ -13,23 +13,6 @@
             <artifactId>core</artifactId>
             <version>3.3.7</version>
         </dependency>
-        <!-- Dependencia de ND4J -->
-        <dependency>
-            <groupId>org.nd4j</groupId>
-            <artifactId>nd4j-native</artifactId>
-            <version>1.0.0-M2.1</version>
-        </dependency>
-        <!-- JavaFX base, controls y gráficos -->
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-controls</artifactId>
-            <version>20.0.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-fxml</artifactId>
-            <version>20.0.2</version>
-        </dependency>
     </dependencies>
     <build>
         <sourceDirectory>src</sourceDirectory>
