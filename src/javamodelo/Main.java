@@ -15,10 +15,10 @@ public class Main extends PApplet {
     int entrenamientoIndex = 0;
 
     RedNeuronal redNeuronal;
-    int batchSize = 100; // Tamaño del batch para el entrenamiento
-    int epochs = 1000;
-    int filtro_epochs = epochs / 10; // Cada cuántas epochs se imprime el resultado
-    Float[] errores_epochs = new Float[epochs];
+    int batchSize; // Tamaño del batch para el entrenamiento
+    int epochs;
+    int filtro_epochs; // Cada cuántas epochs se imprime el resultado
+    Float[] errores_epochs;
     Float[][][] datos_entrenamiento = {
             {{0f, 0f}, {0f}},
             {{0f, 1f}, {1f}},
@@ -52,11 +52,18 @@ public class Main extends PApplet {
     }
 
     private void setUpRedNeuronalXOR() {
+
+        this.batchSize = 100; // Tamaño del batch para el entrenamiento
+        this.epochs = 1000;
+        this.filtro_epochs = epochs / 10; // Cada cuántas epochs se imprime el resultado
+        this.errores_epochs = new Float[epochs];
+
         Scanner scanner = new Scanner(System.in);
         System.out.println("¿Cuántas epochs quieres hacer? (Suelen ser 1000 - 100000): ");
         this.epochs = scanner.nextInt();
         System.out.println("¿Cuántos datos o 'batch size' quieres que se usen en cada entrenamiento? (Suelen ser 100 - 1000): ");
         this.batchSize = scanner.nextInt();
+        this.errores_epochs = new Float[epochs];
         System.out.println("¿Cuántas capas intermedias/ocultas (hidden) quieres en la red neuronal? (Suelen ser 2 - 10): ");
         int hiddenLayers = scanner.nextInt();
 
