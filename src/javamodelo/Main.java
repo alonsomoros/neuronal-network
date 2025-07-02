@@ -6,6 +6,7 @@ import processing.core.PApplet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.Scanner;
 
 
 public class Main extends PApplet {
@@ -51,7 +52,15 @@ public class Main extends PApplet {
     }
 
     private void setUpRedNeuronalXOR() {
-        redNeuronal = new RedNeuronal(2, 4, 1);
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("¿Cuántas epochs quieres hacer? (Suelen ser 1000 - 100000): ");
+        this.epochs = scanner.nextInt();
+        System.out.println("¿Cuántos datos o 'batch size' quieres que se usen en cada entrenamiento? (Suelen ser 100 - 1000): ");
+        this.batchSize = scanner.nextInt();
+        System.out.println("¿Cuántas capas intermedias/ocultas (hidden) quieres en la red neuronal? (Suelen ser 2 - 10): ");
+        int hiddenLayers = scanner.nextInt();
+
+        redNeuronal = new RedNeuronal(2, hiddenLayers, 1);
 
         System.out.println("Antes del entrenamiento: ");
         for (Float[][] floats : datos_test) {
