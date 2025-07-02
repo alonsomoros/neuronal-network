@@ -395,12 +395,12 @@ public class Matrix {
         }
     }
 
-    public static int sumaElementosMatriz(Matrix m) {
+    public static float sumaElementosMatriz(Matrix m) {
         if (m != null) {
-            int suma = 0;
+            float suma = 0;
             for (int i = 0; i < m.filas; i++) {
                 for (int j = 0; j < m.columnas; j++) {
-                    suma += (int) m.datos[i][j];
+                    suma += (float) m.datos[i][j];
                 }
             }
             return suma;

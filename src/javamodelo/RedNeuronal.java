@@ -151,7 +151,7 @@ public class RedNeuronal {
         // ---------- CALCULO DEL MSE ----------
 
         Matrix mseMatriz = Matrix.multiplicarMatrices(error_salidas, error_salidas); // MSE = (T - O)² - [2x1]
-        float mse = (float) Matrix.sumaElementosMatriz(mseMatriz); // MSE = Σ(T - O)²
+        float mse = Matrix.sumaElementosMatriz(mseMatriz); // MSE = Σ(T - O)²
         mse /= objetivos.toArray().length; // MSE = Σ(T - O)² / N
 
         float correctos = 0f;
