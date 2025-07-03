@@ -1,11 +1,20 @@
 package javamodelo.utils;
 
+import javamodelo.RedNeuronal;
 import processing.core.PApplet;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 public class Dibujador {
-    public static void dibujarGrafica(PApplet pApplet, float xi, float yi, float xf, float yf, float margin, Float[] errores, int epochs) { // Los vertices del área que ocupará la gráfica
+
+    private RedNeuronal redNeuronal;
+
+    public Dibujador(RedNeuronal redNeuronal) {
+        this.redNeuronal = redNeuronal;
+    }
+
+    public void dibujarGrafica(PApplet pApplet, float xi, float yi, float xf, float yf, float margin, ArrayList<Float> errores, int epochs) { // Los vertices del área que ocupará la gráfica
 
         // Área de la gráfica
         float x1 = xi + margin;
@@ -42,25 +51,39 @@ public class Dibujador {
 
 
         pApplet.stroke(255, 0, 0); // Color rojo para la línea de error
-
-
-        for (int i = 0; i < epochs / (epochs / 100); i++) {
+        for (int i = 0; i < errores.size(); i++) {
             float distanciasEjes = (x2 - x1);
-            float partesEjes_cien = distanciasEjes / 100;
+            float partesEjeX_cien = distanciasEjes / epochs;
+            float partesEjeY_cien = distanciasEjes / 100;
 
-            float x11 = x1 + (partesEjes_cien * i);
-            float y11 = y2 - ((errores[i] * 100) * partesEjes_cien);
+            float x_inicial = x1 + (partesEjeX_cien * i);
+            float y_inicial = y2 - ((errores.get(i) * 100) * partesEjeY_cien);
 
-            if (i + 1 < errores.length) {
-                float x12 = x1 + (partesEjes_cien * (i + 1));
-                float y12 = y2 - ((errores[i + 1] * 100) * partesEjes_cien);
-                pApplet.line(x11, y11, x12, y12);
-            } else {
-                pApplet.line(x11, y11, x2, y2);
+            if (i + 1 < errores.size()) { // Si no es el último
+                float x_final = x1 + (partesEjeX_cien * (i + 1));
+                float y_final = y2 - ((errores.get(i + 1) * 100) * partesEjeY_cien);
+                pApplet.line(x_inicial, y_inicial, x_final, y_final);
             }
         }
-
         pApplet.endShape();
+    }
 
+    public void dibujarCuadricula(PApplet pApplet, float xi, float yi, float xf, float yf, float margin) {
+        int resolution = 10;
+        int total_width = (int) (xf - xi);
+        int total_height = (int) (yf - yi);
+        int cols = (int) ((total_width - (margin * 2)) / resolution);
+        int rows = (int) ((total_height - (margin * 2)) / resolution);
+        for (int i = 0; i < cols; i++) {
+            for (int j = 0; j < rows; j++) {
+                float x = (float) i / cols;
+                float y = (float) j / rows;
+                Float[] inputs = {x, y};
+                Float[] prediction = this.redNeuronal.predict(inputs);
+                pApplet.stroke(0);
+                pApplet.fill((prediction[0] * 255));
+                pApplet.rect(xi + margin + i * resolution, yi + margin + j * resolution, resolution, resolution);
+            }
+        }
     }
 }
