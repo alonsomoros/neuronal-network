@@ -14,8 +14,8 @@ public class Main extends PApplet {
     int entrenamientoIndex = 0;
 
     RedNeuronal redNeuronal;
-    int batchSize = 100; // Tamaño del batch para el entrenamiento
-    int epochs = 1000;
+    int batchSize = 1000; // Tamaño del batch para el entrenamiento
+    int epochs = 10000;
     int filtro_epochs = epochs / 10; // Cada cuántas epochs se imprime el resultado
     Float[] errores_epochs = new Float[epochs];
     Float[][][] datos_entrenamiento = {
@@ -51,7 +51,7 @@ public class Main extends PApplet {
     }
 
     private void setUpRedNeuronalXOR() {
-        redNeuronal = new RedNeuronal(2, 4, 1);
+        redNeuronal = new RedNeuronal(2, 4, 1, FuncionesDeActivacion::relu, FuncionesDeActivacion::derivadaReLU,FuncionesDeActivacion::sigmoide, FuncionesDeActivacion::derivadaSigmoide);
 
         System.out.println("Antes del entrenamiento: ");
         for (Float[][] floats : datos_test) {
@@ -122,10 +122,8 @@ public class Main extends PApplet {
             for (int j = 0; j < rows; j++) {
                 float x = (float) i / cols;
                 float y = (float) j / rows;
-//                System.out.println("x: " + x + ", y: " + y);
                 Float[] inputs = {x, y};
                 Float[] prediction = redNeuronal.predict(inputs);
-//                System.out.println("Prediction: " + prediction[0] + " que es de color " + Color.getColor("Color", (int) (prediction[0] * 255)));
                 stroke(0);
                 fill((prediction[0] * 255));
                 rect(i * resolution, j * resolution, resolution, resolution);
