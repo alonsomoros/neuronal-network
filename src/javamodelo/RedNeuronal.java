@@ -12,11 +12,13 @@ public class RedNeuronal {
     private Matrix bias_ocultos; // Bias para la capa oculta
     private Matrix bias_salidas; // Bias para la capa de salida
     private double tasa_aprendizaje; // Tasa de aprendizaje para el entrenamiento
-    private Function<Float, Float> funcionDeActivacionOcultas, funcionDeActivacionSalidas;
+    private Function<Float,Float> funcionDeActivacionOcultas;
+    private Function<Float,Float> funcionDeActivacionSalidas;
 
-    private Function<Float, Float> derivadaFuncionDeActivacionOcultas, derivadaFuncionDeActivacionSalidas;
+    private final Function<Float, Float> derivadaFuncionDeActivacionOcultas;
+    private final Function<Float, Float> derivadaFuncionDeActivacionSalidas;
 
-    public RedNeuronal(int numEntradas, int numOcultos, int numSalidas, Function<Float, Float> funcionDeActivacionOcultas, Function<Float, Float> funcionDeActivacionDerivadaOcultas, Function<Float, Float> funcionDeActivacionSalidas, Function<Float, Float> funcionDeActivacionDerivadaSalidas) {
+    public RedNeuronal(int numEntradas, int numOcultos, FuncionDeActivacion<Float> funcionDeActivacionOcultas, int numSalidas, FuncionDeActivacion<Float> funcionDeActivacionSalidas) {
         this.nodos_entradas = numEntradas;
         this.nodos_ocultos = numOcultos;
         this.nodos_salidas = numSalidas;
@@ -32,10 +34,10 @@ public class RedNeuronal {
         this.bias_salidas.randomizar();
         this.tasa_aprendizaje = 0.1; // Tasa de aprendizaje por defecto
 
-        this.funcionDeActivacionOcultas = funcionDeActivacionOcultas; // Función de activación de ocultas
-        this.funcionDeActivacionSalidas = funcionDeActivacionSalidas; // Función de activación de salidas
-        this.derivadaFuncionDeActivacionOcultas = funcionDeActivacionDerivadaOcultas; // Derivada de la función de activación de ocultas
-        this.derivadaFuncionDeActivacionSalidas = funcionDeActivacionDerivadaSalidas; // Derivada de la función de activación de salidas
+        this.funcionDeActivacionOcultas = funcionDeActivacionOcultas.getFunction(); // Función de activación de ocultas
+        this.funcionDeActivacionSalidas = funcionDeActivacionSalidas.getFunction(); // Función de activación de salidas
+        this.derivadaFuncionDeActivacionOcultas = funcionDeActivacionOcultas.getDerivative(); // Derivada de la función de activación de ocultas
+        this.derivadaFuncionDeActivacionSalidas = funcionDeActivacionSalidas.getDerivative(); // Derivada de la función de activación de salidas
     }
 
     public RedNeuronal(int numEntradas, int numOcultos, int numSalidas) {
@@ -54,10 +56,10 @@ public class RedNeuronal {
         this.bias_salidas.randomizar();
         this.tasa_aprendizaje = 0.1; // Tasa de aprendizaje por defecto
 
-        this.funcionDeActivacionOcultas = FuncionesDeActivacion::sigmoide; // Función de activación de ocultas
-        this.funcionDeActivacionSalidas = FuncionesDeActivacion::sigmoide; // Función de activación de salidas
-        this.derivadaFuncionDeActivacionOcultas = FuncionesDeActivacion::derivadaSigmoide; // Derivada de la función de activación de ocultas
-        this.derivadaFuncionDeActivacionSalidas = FuncionesDeActivacion::derivadaSigmoide; // Derivada de la función de activación de salidas
+        this.funcionDeActivacionOcultas = FuncionDeActivacionContainer::sigmoide; // Función de activación de ocultas
+        this.funcionDeActivacionSalidas = FuncionDeActivacionContainer::sigmoide; // Función de activación de salidas
+        this.derivadaFuncionDeActivacionOcultas = FuncionDeActivacionContainer::derivadaSigmoide; // Derivada de la función de activación de ocultas
+        this.derivadaFuncionDeActivacionSalidas = FuncionDeActivacionContainer::derivadaSigmoide; // Derivada de la función de activación de salidas
     }
 
     public Float[] predict(Float[] entrada_array) {

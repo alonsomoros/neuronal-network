@@ -35,7 +35,7 @@ public class Perceptron {
         }
         sum += bias; // Añadir el bias a la suma
 
-        return FuncionesDeActivacion.escalon(sum); // Función de Activación
+        return FuncionDeActivacionContainer.escalon(sum); // Función de Activación
     }
 
 

@@ -18,14 +18,14 @@ public class Main extends PApplet {
     int epochs = 10000;
     int filtro_epochs = epochs / 10; // Cada cuántas epochs se imprime el resultado
     Float[] errores_epochs = new Float[epochs];
-    Float[][][] datos_entrenamiento = {
+    Float[][][] datos_entrenamiento_XOR = {
             {{0f, 0f}, {0f}},
             {{0f, 1f}, {1f}},
             {{1f, 0f}, {1f}},
             {{1f, 1f}, {0f}}
     };
 
-    Float[][][] datos_test = {
+    Float[][][] datos_test_XOR = {
             {{0f, 0f}, {0f}},
             {{0f, 1f}, {1f}},
             {{1f, 0f}, {1f}},
@@ -51,10 +51,10 @@ public class Main extends PApplet {
     }
 
     private void setUpRedNeuronalXOR() {
-        redNeuronal = new RedNeuronal(2, 4, 1, FuncionesDeActivacion::relu, FuncionesDeActivacion::derivadaReLU,FuncionesDeActivacion::sigmoide, FuncionesDeActivacion::derivadaSigmoide);
+        redNeuronal = new RedNeuronal(2, 4,  FuncionDeActivacionContainer.RELU, 1, FuncionDeActivacionContainer.SIGMOIDE);
 
         System.out.println("Antes del entrenamiento: ");
-        for (Float[][] floats : datos_test) {
+        for (Float[][] floats : datos_test_XOR) {
             Float[] resul = redNeuronal.predict(floats[0]);
             System.out.println(Arrays.toString(resul));
         }
@@ -62,7 +62,7 @@ public class Main extends PApplet {
         entrenamientoRedNeuronalXOR();
 
         System.out.println("Después del entrenamiento: ");
-        for (Float[][] floats : datos_test) {
+        for (Float[][] floats : datos_test_XOR) {
             Float[] resul = redNeuronal.predict(floats[0]);
             System.out.println(Arrays.toString(resul));
         }
@@ -159,7 +159,7 @@ public class Main extends PApplet {
         for (int i = 1; i <= epochs; i++) {
             ArrayList<Float[][]> batch = new ArrayList<>();
             for (int j = 0; j < batchSize; j++) { // Tamaño del batch
-                batch.add(datos_entrenamiento[new Random().nextInt(datos_entrenamiento.length)]);
+                batch.add(datos_entrenamiento_XOR[new Random().nextInt(datos_entrenamiento_XOR.length)]);
             }
 
             float coste = 0f;
@@ -192,7 +192,7 @@ public class Main extends PApplet {
     public static float function(float x) {
         float valor_m = -0.3f; // Pendiente
         float valor_n = -0.2f; // Intersección con el eje Y
-        return FuncionesDeActivacion.funcionLineal(valor_m, valor_n, x);
+        return FuncionDeActivacionContainer.funcionLineal(valor_m, valor_n, x);
     }
 
 //    public void mousePressed() {
