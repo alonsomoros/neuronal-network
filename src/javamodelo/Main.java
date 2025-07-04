@@ -4,6 +4,7 @@ import processing.core.PApplet;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 
 public class Main extends PApplet {
@@ -11,8 +12,6 @@ public class Main extends PApplet {
     Punto[] puntos = new Punto[100];
     int entrenamientoIndex = 0;
     ArrayList<RedNeuronal> redesNeuronales;
-    RedNeuronal redNeuronal_XOR;
-    RedNeuronal redNeuronal_XOR2;
     Float[][][] datos_entrenamiento_XOR = {
             {{0f, 0f}, {0f}},
             {{0f, 1f}, {1f}},
@@ -43,8 +42,10 @@ public class Main extends PApplet {
 
         redesNeuronales = new ArrayList<>();
 
-//        setUpPerceptron();
+//        setUpRedNeuronalXOR_entradas();
         setUpRedNeuronalXOR();
+
+//        setUpPerceptron();
     }
 
     private void setUpRedNeuronalXOR() {
@@ -54,15 +55,67 @@ public class Main extends PApplet {
         int numSalidas = 1;
         int batchSize = 50;
 
-        redNeuronal_XOR = new RedNeuronal(epochs, batchSize, numEntradas, numOcultas, FuncionDeActivacionContainer.RELU, numSalidas, FuncionDeActivacionContainer.SIGMOIDE);
-        redNeuronal_XOR.setDatosTest(datos_test_XOR);
-        redNeuronal_XOR.setDatosEntrenamiento(datos_entrenamiento_XOR);
-        redesNeuronales.add(redNeuronal_XOR);
+        FuncionDeActivacion<Float> fa;
+        for (int i = 0; i < 8; i++) {
+            switch (i) {
+                case 0:
+                    fa = FuncionDeActivacionContainer.LEAKY_RELU;
+                    break;
+                case 1:
+                    fa = FuncionDeActivacionContainer.RELU;
+                    break;
+                case 2:
+                    fa = FuncionDeActivacionContainer.TANH;
+                    break;
+                case 3:
+                    fa = FuncionDeActivacionContainer.ESCALON;
+                    break;
+                case 4:
+                    fa = FuncionDeActivacionContainer.SWISH;
+                    break;
+                case 5:
+                    fa = FuncionDeActivacionContainer.SOFTPLUS;
+                    break;
+                case 6:
+                    fa = FuncionDeActivacionContainer.MISH;
+                    break;
+                default:
+                    fa = FuncionDeActivacionContainer.SIGMOIDE;
+            }
 
-        redNeuronal_XOR2 = new RedNeuronal(epochs, batchSize, numEntradas, numOcultas, FuncionDeActivacionContainer.SIGMOIDE, numSalidas, FuncionDeActivacionContainer.SIGMOIDE);
-        redNeuronal_XOR2.setDatosTest(datos_test_XOR);
-        redNeuronal_XOR2.setDatosEntrenamiento(datos_entrenamiento_XOR);
-        redesNeuronales.add(redNeuronal_XOR2);
+            RedNeuronal redNeuronal = new RedNeuronal(epochs, batchSize, numEntradas, numOcultas, fa, numSalidas, FuncionDeActivacionContainer.SIGMOIDE);
+            redNeuronal.setDatosTest(datos_test_XOR);
+            redNeuronal.setDatosEntrenamiento(datos_entrenamiento_XOR);
+            redesNeuronales.add(redNeuronal);
+        }
+    }
+
+    private void setUpRedNeuronalXOR_entradas() {
+        int numEntradas = 2;
+        int numSalidas = 1;
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Ingrese el número de epochs: (10, 100, 1000, etc.)");
+        int epochs = scanner.nextInt();
+        System.out.println("Ingrese el número de neuronas ocultas: (2, 4, 6, etc.)");
+        int numOcultas = scanner.nextInt();
+        System.out.println("Ingrese el tamaño del batch: (10, 50, 100, etc.)");
+        int batchSize = scanner.nextInt();
+        System.out.println("Ingrese la tasa de aprendizaje: (0,01, 0,1, 0,2, etc.)");
+        float tasaAprendizaje = scanner.nextFloat();
+        System.out.println("Cuantas redes neuronales desea crear? (1, 2, 3, etc.)");
+        int numRedes = scanner.nextInt();
+
+        for (int i = 0; i < numRedes; i++) {
+            System.out.println("¿Que tipo de función quiere usar como capa oculta?:\n1. ReLU\n2. Sigmoide\n3. Tanh (Tangente Hiperbólica)\n4. Escalón\n5. LeakyReLU\n6. Swish\n7. Softplus\n8. Mish\n(Conteste con el Número)");
+            int seleccion = scanner.nextInt();
+            FuncionDeActivacion<Float> funcionOculta = FuncionDeActivacionContainer.getInstance().getFuncionDeActivacion(seleccion);
+            RedNeuronal redNeuronal = new RedNeuronal(epochs, batchSize, numEntradas, numOcultas, funcionOculta, numSalidas, FuncionDeActivacionContainer.SIGMOIDE);
+            redNeuronal.setTasa_aprendizaje(tasaAprendizaje);
+            redNeuronal.setDatosTest(datos_test_XOR);
+            redNeuronal.setDatosEntrenamiento(datos_entrenamiento_XOR);
+            redesNeuronales.add(redNeuronal);
+        }
+
     }
 
     private void setUpPerceptron() {
@@ -77,26 +130,24 @@ public class Main extends PApplet {
         stroke(0);
         fill(255);
 
-        redNeuronal_XOR.actualizar(this);
-        redNeuronal_XOR2.actualizar(this);
-
         // Area para cuadricula
-        Rectangle area_cuadricula = new Rectangle(0, 0, this.width / 2, this.height);
+        Rectangle area_grafica_error_epoch = new Rectangle(0, 0, this.width / 2, this.height);
+
         // Area para gráfica
-        Rectangle area_grafica = new Rectangle(this.width / 2, 0, this.width / 2, this.height);
+        Rectangle area_cuadricula = new Rectangle(this.width / 2, 0, this.width / 2, this.height);
         int margin = 50;
 
-        redNeuronal_XOR.dibujarGraficaEstructuraErrorEpoch(this, area_grafica, margin);
-        redNeuronal_XOR.dibujarCuadriculaXOR(this, area_cuadricula);
+        redesNeuronales.get(0).getDibujador().dibujarEstructuraGrafica(this, area_grafica_error_epoch, margin, redesNeuronales.get(0).getEpochs());
+        redesNeuronales.get(0).getDibujador().dibujarCuadricula(this, area_cuadricula, 10);
 
-        if (redNeuronal_XOR.getCurrentEpoch() > 1) {
-            redNeuronal_XOR.dibujarGraficaProgresoErrorEpoch(this, area_grafica, margin, redNeuronal_XOR.getErroresEpochs());
+        for (RedNeuronal redNeuronal : redesNeuronales) {
+
+            redNeuronal.actualizar(this);
+
+            if (redNeuronal.getCurrentEpoch() > 1) {
+                redNeuronal.getDibujador().dibujarValoresGrafica(this, area_grafica_error_epoch, margin, redNeuronal.getEpochs(), redNeuronal.getErroresEpochs());
+            }
         }
-
-        if (redNeuronal_XOR2.getCurrentEpoch() > 1) {
-            redNeuronal_XOR2.dibujarGraficaProgresoErrorEpoch(this, area_grafica, margin, redNeuronal_XOR2.getErroresEpochs());
-        }
-
     }
 
     private void dibujarPruebaPerceptronSimple() {
