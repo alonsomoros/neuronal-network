@@ -1,23 +1,18 @@
 package javamodelo;
 
-import javamodelo.utils.Dibujador;
 import processing.core.PApplet;
 
+import java.awt.*;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Random;
 
 
 public class Main extends PApplet {
     Perceptron perceptron;
     Punto[] puntos = new Punto[100];
     int entrenamientoIndex = 0;
-
-    RedNeuronal redNeuronal;
-    int batchSize = 1000; // Tamaño del batch para el entrenamiento
-    int epochs = 10000;
-    int filtro_epochs = epochs / 10; // Cada cuántas epochs se imprime el resultado
-    Float[] errores_epochs = new Float[epochs];
+    ArrayList<RedNeuronal> redesNeuronales;
+    RedNeuronal redNeuronal_XOR;
+    RedNeuronal redNeuronal_XOR2;
     Float[][][] datos_entrenamiento_XOR = {
             {{0f, 0f}, {0f}},
             {{0f, 1f}, {1f}},
@@ -46,26 +41,28 @@ public class Main extends PApplet {
         fill(255);
         textSize(16);
 
+        redesNeuronales = new ArrayList<>();
+
 //        setUpPerceptron();
         setUpRedNeuronalXOR();
     }
 
     private void setUpRedNeuronalXOR() {
-        redNeuronal = new RedNeuronal(2, 4,  FuncionDeActivacionContainer.RELU, 1, FuncionDeActivacionContainer.SIGMOIDE);
+        int epochs = 100;
+        int numEntradas = 2;
+        int numOcultas = 4;
+        int numSalidas = 1;
+        int batchSize = 50;
 
-        System.out.println("Antes del entrenamiento: ");
-        for (Float[][] floats : datos_test_XOR) {
-            Float[] resul = redNeuronal.predict(floats[0]);
-            System.out.println(Arrays.toString(resul));
-        }
+        redNeuronal_XOR = new RedNeuronal(epochs, batchSize, numEntradas, numOcultas, FuncionDeActivacionContainer.RELU, numSalidas, FuncionDeActivacionContainer.SIGMOIDE);
+        redNeuronal_XOR.setDatosTest(datos_test_XOR);
+        redNeuronal_XOR.setDatosEntrenamiento(datos_entrenamiento_XOR);
+        redesNeuronales.add(redNeuronal_XOR);
 
-        entrenamientoRedNeuronalXOR();
-
-        System.out.println("Después del entrenamiento: ");
-        for (Float[][] floats : datos_test_XOR) {
-            Float[] resul = redNeuronal.predict(floats[0]);
-            System.out.println(Arrays.toString(resul));
-        }
+        redNeuronal_XOR2 = new RedNeuronal(epochs, batchSize, numEntradas, numOcultas, FuncionDeActivacionContainer.SIGMOIDE, numSalidas, FuncionDeActivacionContainer.SIGMOIDE);
+        redNeuronal_XOR2.setDatosTest(datos_test_XOR);
+        redNeuronal_XOR2.setDatosEntrenamiento(datos_entrenamiento_XOR);
+        redesNeuronales.add(redNeuronal_XOR2);
     }
 
     private void setUpPerceptron() {
@@ -80,9 +77,26 @@ public class Main extends PApplet {
         stroke(0);
         fill(255);
 
-        // Dibujar la función lineal
-//        dibujarPruebaPerceptronSimple();
-        dibujarPruebaRedNeuronalXOR();
+        redNeuronal_XOR.actualizar(this);
+        redNeuronal_XOR2.actualizar(this);
+
+        // Area para cuadricula
+        Rectangle area_cuadricula = new Rectangle(0, 0, this.width / 2, this.height);
+        // Area para gráfica
+        Rectangle area_grafica = new Rectangle(this.width / 2, 0, this.width / 2, this.height);
+        int margin = 50;
+
+        redNeuronal_XOR.dibujarGraficaEstructuraErrorEpoch(this, area_grafica, margin);
+        redNeuronal_XOR.dibujarCuadriculaXOR(this, area_cuadricula);
+
+        if (redNeuronal_XOR.getCurrentEpoch() > 1) {
+            redNeuronal_XOR.dibujarGraficaProgresoErrorEpoch(this, area_grafica, margin, redNeuronal_XOR.getErroresEpochs());
+        }
+
+        if (redNeuronal_XOR2.getCurrentEpoch() > 1) {
+            redNeuronal_XOR2.dibujarGraficaProgresoErrorEpoch(this, area_grafica, margin, redNeuronal_XOR2.getErroresEpochs());
+        }
+
     }
 
     private void dibujarPruebaPerceptronSimple() {
@@ -114,36 +128,6 @@ public class Main extends PApplet {
         line(p1.getXpixel(), p1.getYpixel(), p2.getXpixel(), p2.getYpixel());
     }
 
-    private void dibujarPruebaRedNeuronalXOR() {
-        int resolution = 10;
-        int cols = (width / 2) / resolution; // Para tener lugar a la otra parte
-        int rows = height / resolution;
-        for (int i = 0; i < cols; i++) {
-            for (int j = 0; j < rows; j++) {
-                float x = (float) i / cols;
-                float y = (float) j / rows;
-                Float[] inputs = {x, y};
-                Float[] prediction = redNeuronal.predict(inputs);
-                stroke(0);
-                fill((prediction[0] * 255));
-                rect(i * resolution, j * resolution, resolution, resolution);
-            }
-        }
-        dibujarGraficaProgresoErrorEpoch(errores_epochs);
-    }
-
-    private void dibujarGraficaProgresoErrorEpoch(Float[] errores_epoch) {
-        fill(255);
-
-        float x_init = (float) width / 2;
-        float x_end = width;
-        float y_init = 0;
-        float y_end = height;
-        float margin = 50;
-
-        Dibujador.dibujarGrafica(this, x_init, y_init, x_end, y_end, margin, errores_epoch, errores_epoch.length);
-    }
-
     private void entrenamientoPerceptronSimple() {
         Punto entrenamiento = puntos[entrenamientoIndex];
         Float[] entradas = {entrenamiento.x, entrenamiento.y};
@@ -152,39 +136,6 @@ public class Main extends PApplet {
         entrenamientoIndex++;
         if (entrenamientoIndex >= puntos.length) {
             entrenamientoIndex = 0;
-        }
-    }
-
-    private void entrenamientoRedNeuronalXOR() {
-        for (int i = 1; i <= epochs; i++) {
-            ArrayList<Float[][]> batch = new ArrayList<>();
-            for (int j = 0; j < batchSize; j++) { // Tamaño del batch
-                batch.add(datos_entrenamiento_XOR[new Random().nextInt(datos_entrenamiento_XOR.length)]);
-            }
-
-            float coste = 0f;
-            float sumCorrectos = 0f;
-            for (Float[][] data : batch) {
-                Float[] entradas = data[0]; // [e1, e2]
-                Float[] objetivos = data[1]; // [obj1]
-                Float[] resultadoEntrenamiento = redNeuronal.entrenar(entradas, objetivos); // MSE y Correctos
-
-
-                sumCorrectos += resultadoEntrenamiento[1];
-
-                coste += resultadoEntrenamiento[0];
-            }
-            coste = (coste / batchSize);
-
-            errores_epochs[i - 1] = coste;
-
-            if (i % (filtro_epochs / 10) == 0) {
-                System.out.println("<< Error en el epoch " + i + " es: " + errores_epochs[i - 1] + " >>"); // Cuidado porque si no es la anterior sale null, ya que todavía no ha hecho la siguiente
-
-                if (i % filtro_epochs == 0) {
-                    System.out.printf("Epoch: %d, Coste: %.8f\nAccuracy: %.2f\nCorrectos: %.0f de %d\n", i, coste, (sumCorrectos / batchSize), sumCorrectos, batchSize);
-                }
-            }
         }
     }
 

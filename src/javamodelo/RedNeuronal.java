@@ -1,9 +1,25 @@
 package javamodelo;
 
+import javamodelo.utils.Dibujador;
+import processing.core.PApplet;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Random;
 import java.util.function.Function;
 
 public class RedNeuronal {
 
+    private static int contadorID = 0;
+    public int ID = ++contadorID;
+    private Dibujador dibujador;
+    private final int epochs;
+    private final int filtro_epochs; // Filtro para mostrar el error cada 10 epochs
+    private int currentEpoch = 0;
+    private boolean isTraining = false;
+    private final int batchSize;
+    private Float[][][] datos_entrenamiento;
+    private Float[][][] datos_test;
     private final int nodos_entradas; // Número de nodos en la capa de entrada
     private final int nodos_ocultos; // Número de nodos en la capa oculta
     private final int nodos_salidas; // Número de nodos en la capa de salida
@@ -12,13 +28,19 @@ public class RedNeuronal {
     private Matrix bias_ocultos; // Bias para la capa oculta
     private Matrix bias_salidas; // Bias para la capa de salida
     private double tasa_aprendizaje; // Tasa de aprendizaje para el entrenamiento
-    private Function<Float,Float> funcionDeActivacionOcultas;
-    private Function<Float,Float> funcionDeActivacionSalidas;
-
+    private final Function<Float, Float> funcionDeActivacionOcultas;
+    private final Function<Float, Float> funcionDeActivacionSalidas;
     private final Function<Float, Float> derivadaFuncionDeActivacionOcultas;
     private final Function<Float, Float> derivadaFuncionDeActivacionSalidas;
+    private ArrayList<Float> errores_epochs = new ArrayList<>();
 
-    public RedNeuronal(int numEntradas, int numOcultos, FuncionDeActivacion<Float> funcionDeActivacionOcultas, int numSalidas, FuncionDeActivacion<Float> funcionDeActivacionSalidas) {
+    public RedNeuronal(int epochs, int batchSize, int numEntradas, int numOcultos, FuncionDeActivacion<Float> funcionDeActivacionOcultas, int numSalidas, FuncionDeActivacion<Float> funcionDeActivacionSalidas) {
+        this.dibujador = new Dibujador(this);
+
+        this.epochs = epochs;
+        this.filtro_epochs = epochs / 10;
+        this.batchSize = batchSize;
+
         this.nodos_entradas = numEntradas;
         this.nodos_ocultos = numOcultos;
         this.nodos_salidas = numSalidas;
@@ -40,7 +62,13 @@ public class RedNeuronal {
         this.derivadaFuncionDeActivacionSalidas = funcionDeActivacionSalidas.getDerivative(); // Derivada de la función de activación de salidas
     }
 
-    public RedNeuronal(int numEntradas, int numOcultos, int numSalidas) {
+    public RedNeuronal(int epochs, int batchSize, int numEntradas, int numOcultos, int numSalidas) {
+        this.dibujador = new Dibujador(this);
+
+        this.epochs = epochs;
+        this.batchSize = batchSize;
+        this.filtro_epochs = epochs / 10;
+
         this.nodos_entradas = numEntradas;
         this.nodos_ocultos = numOcultos;
         this.nodos_salidas = numSalidas;
@@ -205,6 +233,60 @@ public class RedNeuronal {
         return new Float[]{mse, correctos};
     }
 
+    private void entrenarEpoch(Float[][][] datos_entrenamiento) {
+        ArrayList<Float[][]> batch = new ArrayList<>();
+        for (int j = 0; j < this.getBatchSize(); j++) { // Tamaño del batch
+            batch.add(datos_entrenamiento[new Random().nextInt(datos_entrenamiento.length)]);
+        }
+
+        float coste = 0f;
+        float sumCorrectos = 0f;
+        for (Float[][] data : batch) {
+            Float[] entradas = data[0]; // [e1, e2]
+            Float[] objetivos = data[1]; // [obj1]
+            Float[] resultadoEntrenamiento = this.entrenar(entradas, objetivos); // MSE y Correctos
+
+            sumCorrectos += resultadoEntrenamiento[1];
+            coste += resultadoEntrenamiento[0];
+        }
+        coste = (coste / this.getBatchSize());
+        errores_epochs.add(coste);
+
+        if (this.getCurrentEpoch() % (filtro_epochs / 10) == 0) {
+            System.out.println("<< Error en el epoch " + this.getCurrentEpoch() + " de " + ID + " que es: " + errores_epochs.get(this.getCurrentEpoch()) + " >>"); // Cuidado porque si no es la anterior sale null, ya que todavía no ha hecho la siguiente
+
+            if (this.getCurrentEpoch() % filtro_epochs == 0) {
+                System.out.printf("Epoch: %d, Coste: %.8f\nAccuracy: %.2f\nCorrectos: %.0f de %d\n", this.getCurrentEpoch(), coste, (sumCorrectos / this.getBatchSize()), sumCorrectos, this.getBatchSize());
+            }
+        }
+    }
+
+    public void actualizar(PApplet pApplet) {
+        pApplet.fill(255);
+
+        isTraining = true;
+        if (isTraining && currentEpoch < this.getEpochs()) {
+            entrenarEpoch(getDatosEntrenamiento());
+            currentEpoch++;
+        }
+        if (currentEpoch >= this.getEpochs()) {
+            isTraining = false;
+        }
+    }
+
+    public void dibujarCuadriculaXOR(PApplet pApplet, Rectangle area_cuadricula) {
+        float margin = 0;
+        dibujador.dibujarCuadricula(pApplet, area_cuadricula, margin);
+    }
+
+    public void dibujarGraficaProgresoErrorEpoch(PApplet pApplet, Rectangle areaGrafica, int margin, ArrayList<Float> errores_epoch) {
+        dibujador.dibujarValoresGrafica(pApplet, areaGrafica, margin, this.getEpochs(), errores_epoch);
+    }
+
+    public void dibujarGraficaEstructuraErrorEpoch(PApplet pApplet, Rectangle areaGrafica, int margin) {
+        dibujador.dibujarEstructuraGrafica(pApplet, areaGrafica, margin, this.getEpochs());
+    }
+
     public void setTasa_aprendizaje(double tasa_aprendizaje) {
         this.tasa_aprendizaje = tasa_aprendizaje;
     }
@@ -221,11 +303,39 @@ public class RedNeuronal {
         return funcionDeActivacionSalidas;
     }
 
-    public void setFuncionDeActivacionSalidas(Function<Float, Float> funcionDeActivacionSalidas) {
-        this.funcionDeActivacionSalidas = funcionDeActivacionSalidas;
+    public int getEpochs() {
+        return epochs;
     }
 
-    public void setFuncionDeActivacionOcultas(Function<Float, Float> funcionDeActivacionOcultas) {
-        this.funcionDeActivacionOcultas = funcionDeActivacionOcultas;
+    public int getCurrentEpoch() {
+        return currentEpoch;
+    }
+
+    public boolean isTraining() {
+        return isTraining;
+    }
+
+    public int getBatchSize() {
+        return batchSize;
+    }
+
+    public void setDatosEntrenamiento(Float[][][] datos_entrenamiento) {
+        this.datos_entrenamiento = datos_entrenamiento;
+    }
+
+    public Float[][][] getDatosEntrenamiento() {
+        return datos_entrenamiento;
+    }
+
+    public void setDatosTest(Float[][][] datos_test) {
+        this.datos_test = datos_test;
+    }
+
+    public Float[][][] getDatosTest() {
+        return datos_test;
+    }
+
+    public ArrayList<Float> getErroresEpochs() {
+        return this.errores_epochs;
     }
 }
