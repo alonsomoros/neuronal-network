@@ -1,6 +1,5 @@
 package javamodelo.utils;
 
-import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import javamodelo.RedNeuronal;
 import processing.core.PApplet;
 
@@ -53,17 +52,20 @@ public class Dibujador {
 
     public void dibujarValoresGrafica(PApplet pApplet, Rectangle areaGrafica, float margin, int epochs, ArrayList<Float> errores) { // Los vertices del área que ocupará la gráfica
 
-        if (redNeuronal.ID == 1) {
-            pApplet.stroke(0, 255, 0); // Color rojo para la línea de error
-        } else {
-            pApplet.stroke(255, 0, 0); // Color azul para la línea de error
-        }
-
         // Área de la gráfica
         float x1 = areaGrafica.x + margin;
         float x2 = areaGrafica.x + areaGrafica.width - margin;
         float y1 = areaGrafica.y + margin; // = margin
         float y2 = areaGrafica.y + areaGrafica.height - margin;
+
+        Color color = new Color((redNeuronal.ID * 50) % 255, (redNeuronal.ID * 80) % 255, (redNeuronal.ID * 120) % 255);
+        // Texto
+        pApplet.fill(0);
+        pApplet.text(redNeuronal.getFuncionDeActivacionOcultas().getNombre() , x2 - ((x2 - x1) / 2) + 20, y1 + (redNeuronal.ID * 15));
+        // Color
+        pApplet.fill(color.getRGB());
+        pApplet.stroke(color.getRGB());
+        pApplet.rect(x2 - ((x2 - x1) / 2), y1 + (redNeuronal.ID * 15) - 10 , 10, 10, 5);
 
         for (int i = 0; i < errores.size(); i++) {
             float distanciasEjes = (x2 - x1);
@@ -84,8 +86,8 @@ public class Dibujador {
 
     public void dibujarCuadricula(PApplet pApplet, Rectangle area, float margin) {
         int resolution = 10;
-        int total_width = (area.width - area.x);
-        int total_height = (area.height - area.y);
+        int total_width = area.width;
+        int total_height = area.height;
         int cols = (int) ((total_width - (margin * 2)) / resolution);
         int rows = (int) ((total_height - (margin * 2)) / resolution);
         for (int i = 0; i < cols; i++) {
