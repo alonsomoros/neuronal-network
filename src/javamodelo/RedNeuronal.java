@@ -247,10 +247,8 @@ public class RedNeuronal {
         errores_epochs.add(coste);
 
         if (this.getCurrentEpoch() % (filtro_epochs / 10) == 0) {
-//            System.out.println("<< Error en el epoch " + this.getCurrentEpoch() + " de " + ID + " que es: " + errores_epochs.get(this.getCurrentEpoch()) + " >>"); // Cuidado porque si no es la anterior sale null, ya que todavía no ha hecho la siguiente
-
             if (this.getCurrentEpoch() % filtro_epochs == 0) {
-                System.out.printf("Epoch: %d, Coste: %.8f\nAccuracy: %.2f\nCorrectos: %.0f de %d\n", this.getCurrentEpoch(), coste, (sumCorrectos / this.getBatchSize()), sumCorrectos, this.getBatchSize());
+                System.out.printf("Red: %d - Epoch: %d, Coste: %.8f\nCorrectos: %.0f de %d (%.2f%%)\n",ID, this.getCurrentEpoch(), coste, sumCorrectos, this.getBatchSize(), (sumCorrectos / this.getBatchSize()));
             }
         }
     }
@@ -263,22 +261,10 @@ public class RedNeuronal {
             entrenarEpoch(getDatosEntrenamiento());
             currentEpoch++;
         }
+
         if (currentEpoch >= this.getEpochs()) {
             isTraining = false;
         }
-    }
-
-    public void dibujarCuadriculaXOR(PApplet pApplet, Rectangle area_cuadricula) {
-        float margin = 0;
-        dibujador.dibujarCuadricula(pApplet, area_cuadricula, margin);
-    }
-
-    public void dibujarGraficaProgresoErrorEpoch(PApplet pApplet, Rectangle areaGrafica, int margin, ArrayList<Float> errores_epoch) {
-        dibujador.dibujarValoresGrafica(pApplet, areaGrafica, margin, this.getEpochs(), errores_epoch);
-    }
-
-    public void dibujarGraficaEstructuraErrorEpoch(PApplet pApplet, Rectangle areaGrafica, int margin) {
-        dibujador.dibujarEstructuraGrafica(pApplet, areaGrafica, margin, this.getEpochs());
     }
 
     public void setTasa_aprendizaje(double tasa_aprendizaje) {

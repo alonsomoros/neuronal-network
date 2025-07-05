@@ -8,6 +8,7 @@ import java.util.Scanner;
 
 
 public class Main extends PApplet {
+    private static final int NUM_NEURONAS = 7;
     Perceptron perceptron;
     Punto[] puntos = new Punto[100];
     int entrenamientoIndex = 0;
@@ -31,19 +32,17 @@ public class Main extends PApplet {
     }
 
     public void settings() {
-        size(800, 400);
+        size(900, 900);
     }
 
     public void setup() {
-        background(255);
-        stroke(0);
-        fill(255);
+        inicializarCanvas();
         textSize(16);
 
         redesNeuronales = new ArrayList<>();
 
-//        setUpRedNeuronalXOR_entradas();
-        setUpRedNeuronalXOR();
+        setUpRedNeuronalXOR_entradas();
+//        setUpRedNeuronalXOR();
 
 //        setUpPerceptron();
     }
@@ -56,7 +55,7 @@ public class Main extends PApplet {
         int batchSize = 50;
 
         FuncionDeActivacion<Float> fa;
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < NUM_NEURONAS; i++) {
             switch (i) {
                 case 0:
                     fa = FuncionDeActivacionContainer.LEAKY_RELU;
@@ -102,7 +101,7 @@ public class Main extends PApplet {
         int batchSize = scanner.nextInt();
         System.out.println("Ingrese la tasa de aprendizaje: (0,01, 0,1, 0,2, etc.)");
         float tasaAprendizaje = scanner.nextFloat();
-        System.out.println("Cuantas redes neuronales desea crear? (1, 2, 3, etc.)");
+        System.out.println("Cuantas redes neuronales desea crear? [1 - 10]");
         int numRedes = scanner.nextInt();
 
         for (int i = 0; i < numRedes; i++) {
@@ -126,28 +125,51 @@ public class Main extends PApplet {
     }
 
     public void draw() {
+        inicializarCanvas();
+        if (redesNeuronales.isEmpty()) return;
+
+
+        // Cálculos para dimensiones de las gráficas
+        int filasDeGraficas = (int) Math.round(Math.sqrt(redesNeuronales.size() + 1));                         // Porciones de filas
+        int columnasDeGraficas = (int) Math.ceil((double) (redesNeuronales.size() + 1) / filasDeGraficas);     // Porciones de columnas
+        int anchoCuadrante = this.width / columnasDeGraficas;                                                  // Ancho de cada cuadrante
+        int altoCuadrante = this.height / filasDeGraficas;                                                     // Alto de cada cuadrante
+
+        // Dimensiones del área de la gráfica
+        Rectangle dimensionCuadrante = new Rectangle(filasDeGraficas, columnasDeGraficas, anchoCuadrante, altoCuadrante); // x = filas , y = columnas
+
+        // Area para cuadricula
+        Rectangle coords_grafica_error_epoch = new Rectangle(0, 0, anchoCuadrante, altoCuadrante);
+
+        dibujarEstructuraGrafica(coords_grafica_error_epoch);
+
+        for (RedNeuronal redNeuronal : redesNeuronales) {
+            actualizarYDibujarRed(redNeuronal, dimensionCuadrante, coords_grafica_error_epoch);
+        }
+    }
+
+    private void actualizarYDibujarRed(RedNeuronal redNeuronal, Rectangle dimensionCuadrante, Rectangle coordenadasGrafica) {
+
+        int x_init = (redNeuronal.ID % dimensionCuadrante.y) * dimensionCuadrante.width;
+        int y_init = (int) ((Math.floor((double) redNeuronal.ID / dimensionCuadrante.y)) * dimensionCuadrante.height);
+        Rectangle area_cuadrante = new Rectangle(x_init, y_init, dimensionCuadrante.width, dimensionCuadrante.height);
+
+        redNeuronal.actualizar(this);
+
+        redNeuronal.getDibujador().dibujarCuadricula(this, area_cuadrante);
+        redNeuronal.getDibujador().dibujarValoresGrafica(this, coordenadasGrafica, redNeuronal.getEpochs(), redNeuronal.getErroresEpochs());
+    }
+
+    private void dibujarEstructuraGrafica(Rectangle areaGrafica) {
+        final int MARGEN_GRAFICA = 50;
+        RedNeuronal redNeuronal = redesNeuronales.get(0);
+        redNeuronal.getDibujador().dibujarEstructuraGrafica(this, areaGrafica, MARGEN_GRAFICA, redNeuronal.getEpochs());
+    }
+
+    private void inicializarCanvas() {
         background(255);
         stroke(0);
         fill(255);
-
-        // Area para cuadricula
-        Rectangle area_grafica_error_epoch = new Rectangle(0, 0, this.width / 2, this.height);
-
-        // Area para gráfica
-        Rectangle area_cuadricula = new Rectangle(this.width / 2, 0, this.width / 2, this.height);
-        int margin = 50;
-
-        redesNeuronales.get(0).getDibujador().dibujarEstructuraGrafica(this, area_grafica_error_epoch, margin, redesNeuronales.get(0).getEpochs());
-        redesNeuronales.get(0).getDibujador().dibujarCuadricula(this, area_cuadricula, 10);
-
-        for (RedNeuronal redNeuronal : redesNeuronales) {
-
-            redNeuronal.actualizar(this);
-
-            if (redNeuronal.getCurrentEpoch() > 1) {
-                redNeuronal.getDibujador().dibujarValoresGrafica(this, area_grafica_error_epoch, margin, redNeuronal.getEpochs(), redNeuronal.getErroresEpochs());
-            }
-        }
     }
 
     private void dibujarPruebaPerceptronSimple() {

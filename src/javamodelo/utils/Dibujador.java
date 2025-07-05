@@ -10,6 +10,9 @@ public class Dibujador {
 
     private final RedNeuronal redNeuronal;
 
+    public final int MARGEN_GRAFICA = 50;
+    public final int MARGEN_CUADRICULA = 5;
+
     public Dibujador(RedNeuronal redNeuronal) {
         this.redNeuronal = redNeuronal;
     }
@@ -34,7 +37,7 @@ public class Dibujador {
         pApplet.text("Epochs", x1 - tamanoTextoEpoch.x, y2 + tamanoTextoEpoch.y);
         pApplet.text("Error (MSE)", x1 - tamanoTextoError.x, y1 - tamanoTextoError.y);
 
-        if (epochs > 1000) {
+        if (areaGrafica.width < 300) {
             pApplet.textSize(8);
         }
 
@@ -50,13 +53,13 @@ public class Dibujador {
         }
     }
 
-    public void dibujarValoresGrafica(PApplet pApplet, Rectangle areaGrafica, float margin, int epochs, ArrayList<Float> errores) { // Los vertices del área que ocupará la gráfica
+    public void dibujarValoresGrafica(PApplet pApplet, Rectangle areaGrafica, int epochs, ArrayList<Float> errores) { // Los vertices del área que ocupará la gráfica
 
         // Área de la gráfica
-        float x1 = areaGrafica.x + margin;
-        float x2 = areaGrafica.x + areaGrafica.width - margin;
-        float y1 = areaGrafica.y + margin; // = margin
-        float y2 = areaGrafica.y + areaGrafica.height - margin;
+        float x1 = areaGrafica.x + MARGEN_GRAFICA;
+        float x2 = areaGrafica.x + areaGrafica.width - MARGEN_GRAFICA;
+        float y1 = areaGrafica.y + MARGEN_GRAFICA; // = margin
+        float y2 = areaGrafica.y + areaGrafica.height - MARGEN_GRAFICA;
 
         Color color = new Color((redNeuronal.ID * 50) % 255, (redNeuronal.ID * 80) % 255, (redNeuronal.ID * 120) % 255);
         // Texto
@@ -84,12 +87,12 @@ public class Dibujador {
         pApplet.endShape();
     }
 
-    public void dibujarCuadricula(PApplet pApplet, Rectangle area, float margin) {
+    public void dibujarCuadricula(PApplet pApplet, Rectangle area) {
         int resolution = 10;
         int total_width = area.width;
         int total_height = area.height;
-        int cols = (int) ((total_width - (margin * 2)) / resolution);
-        int rows = (int) ((total_height - (margin * 2)) / resolution);
+        int cols = (int) ((total_width - (MARGEN_CUADRICULA * 2)) / resolution);
+        int rows = (int) ((total_height - (MARGEN_CUADRICULA * 2)) / resolution);
         for (int i = 0; i < cols; i++) {
             for (int j = 0; j < rows; j++) {
                 float x = (float) i / cols;
@@ -98,7 +101,7 @@ public class Dibujador {
                 Float[] prediction = this.redNeuronal.predict(inputs);
                 pApplet.stroke(0);
                 pApplet.fill((prediction[0] * 255));
-                pApplet.rect(area.x + margin + i * resolution, area.y + margin + j * resolution, resolution, resolution);
+                pApplet.rect(area.x + MARGEN_CUADRICULA + i * resolution, area.y + MARGEN_CUADRICULA + j * resolution, resolution, resolution);
             }
         }
     }
