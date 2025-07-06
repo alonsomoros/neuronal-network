@@ -9,11 +9,25 @@ import java.util.Scanner;
 
 
 public class Main extends PApplet {
-    private static final int NUM_NEURONAS = 9;
+
+    static class PRUEBA_DATOS_PERCEPTRON {
+        static final int NUM_PUNTOS = 100;
+        static int EPOCHS = 1000;
+        static final Punto[] PUNTOS = new Punto[PRUEBA_DATOS_PERCEPTRON.NUM_PUNTOS];
+        static final float TASA_APRENDIZAJE = 0.1f;
+    }
     Perceptron perceptron;
-    Punto[] puntos = new Punto[100];
-    int entrenamientoIndex = 0;
+
     ArrayList<RedNeuronal> redesNeuronales;
+
+    static class PRUEBA_DATOS_XOR {
+        static final int NUM_NEURONAS = 5;
+        static final int EPOCHS = 100;
+        static final int NUM_CAPAS_ENTRADAS = 2;
+        static final int NUM_CAPAS_OCULTAS = 4;
+        static final int NUM_CAPAS_SALIDAS = 1;
+        static final int BATCH_SIZE = 50;
+    }
     Float[][][] datos_entrenamiento_XOR = {
             {{0f, 0f}, {0f}},
             {{0f, 1f}, {1f}},
@@ -49,14 +63,10 @@ public class Main extends PApplet {
     }
 
     private void setUpRedNeuronalXOR() {
-        int epochs = 100;
-        int numEntradas = 2;
-        int numOcultas = 4;
-        int numSalidas = 1;
-        int batchSize = 50;
+
 
         FuncionDeActivacion<Float> fa;
-        for (int i = 0; i < NUM_NEURONAS; i++) {
+        for (int i = 0; i < PRUEBA_DATOS_XOR.NUM_NEURONAS; i++) {
             switch (i) {
                 case 0:
                     fa = FuncionDeActivacionContainer.LEAKY_RELU;
@@ -83,7 +93,7 @@ public class Main extends PApplet {
                     fa = FuncionDeActivacionContainer.SIGMOIDE;
             }
 
-            RedNeuronal redNeuronal = new RedNeuronal(epochs, batchSize, numEntradas, numOcultas, fa, numSalidas, FuncionDeActivacionContainer.SIGMOIDE);
+            RedNeuronal redNeuronal = new RedNeuronal(PRUEBA_DATOS_XOR.EPOCHS, PRUEBA_DATOS_XOR.BATCH_SIZE, PRUEBA_DATOS_XOR.NUM_CAPAS_ENTRADAS, PRUEBA_DATOS_XOR.NUM_CAPAS_OCULTAS, fa, PRUEBA_DATOS_XOR.NUM_CAPAS_SALIDAS, FuncionDeActivacionContainer.SIGMOIDE);
             redNeuronal.setDatosTest(datos_test_XOR);
             redNeuronal.setDatosEntrenamiento(datos_entrenamiento_XOR);
             redesNeuronales.add(redNeuronal);
@@ -120,8 +130,8 @@ public class Main extends PApplet {
 
     private void setUpPerceptron() {
         perceptron = new Perceptron(2, 0.1);
-        for (int i = 0; i < puntos.length; i++) {
-            puntos[i] = new Punto(this);
+        for (int i = 0; i < PRUEBA_DATOS_PERCEPTRON.PUNTOS.length; i++) {
+            PRUEBA_DATOS_PERCEPTRON.PUNTOS[i] = new Punto(this);
         }
     }
 
@@ -179,11 +189,11 @@ public class Main extends PApplet {
         // Dibujar la línea de decisión del perceptrón
         dibujarLineaDecision();
         // Mostrar los puntos
-        for (Punto punto : puntos) {
+        for (Punto punto : PRUEBA_DATOS_PERCEPTRON.PUNTOS) {
             punto.show(this);
         }
         // Mostrar las etiquetas de los puntos
-        for (Punto punto : puntos) {
+        for (Punto punto : PRUEBA_DATOS_PERCEPTRON.PUNTOS) {
             punto.showEtiqueta(this, perceptron, punto);
         }
         // Aprovecha el bucle de dibujo para entrenar el perceptrón
@@ -203,13 +213,13 @@ public class Main extends PApplet {
     }
 
     private void entrenamientoPerceptronSimple() {
-        Punto entrenamiento = puntos[entrenamientoIndex];
+        Punto entrenamiento = PRUEBA_DATOS_PERCEPTRON.PUNTOS[PRUEBA_DATOS_PERCEPTRON.EPOCHS];
         Float[] entradas = {entrenamiento.x, entrenamiento.y};
         Float objetivo = entrenamiento.etiqueta;
         perceptron.entrenar(entradas, objetivo);
-        entrenamientoIndex++;
-        if (entrenamientoIndex >= puntos.length) {
-            entrenamientoIndex = 0;
+        PRUEBA_DATOS_PERCEPTRON.EPOCHS--;
+        if (PRUEBA_DATOS_PERCEPTRON.EPOCHS <= 0) {
+            PRUEBA_DATOS_PERCEPTRON.EPOCHS = PRUEBA_DATOS_PERCEPTRON.PUNTOS.length;
         }
     }
 
