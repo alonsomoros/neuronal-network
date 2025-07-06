@@ -322,4 +322,15 @@ public class RedNeuronal {
     public Dibujador getDibujador() {
         return dibujador;
     }
+
+    public void reset() {
+        this.pesos_entradas_a_ocultos.randomizar();
+        this.pesos_ocultos_a_salidas.randomizar();
+        this.bias_ocultos.randomizar();
+        this.bias_salidas.randomizar();
+        this.tasa_aprendizaje = 0.1; // Resetear tasa de aprendizaje
+        this.currentEpoch = 0;
+        this.errores_epochs.clear();
+        this.isTraining = false;
+    }
 }
