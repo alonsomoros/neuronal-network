@@ -1,4 +1,4 @@
-package javamodelo;
+package javamodelo.pruebas.perceptron;
 
 import processing.core.PApplet;
 import static processing.core.PApplet.map;

@@ -1,4 +1,4 @@
-package javamodelo;
+package javamodelo.pruebas.perceptron;
 
 import javamodelo.funciones_de_activacion.FuncionDeActivacionContainer;
 import processing.core.PApplet;
