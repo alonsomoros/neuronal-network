@@ -1,6 +1,7 @@
 package javamodelo;
 
 import processing.core.PApplet;
+import processing.event.KeyEvent;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -8,7 +9,7 @@ import java.util.Scanner;
 
 
 public class Main extends PApplet {
-    private static final int NUM_NEURONAS = 7;
+    private static final int NUM_NEURONAS = 9;
     Perceptron perceptron;
     Punto[] puntos = new Punto[100];
     int entrenamientoIndex = 0;
@@ -41,8 +42,8 @@ public class Main extends PApplet {
 
         redesNeuronales = new ArrayList<>();
 
-        setUpRedNeuronalXOR_entradas();
-//        setUpRedNeuronalXOR();
+//        setUpRedNeuronalXOR_entradas();
+        setUpRedNeuronalXOR();
 
 //        setUpPerceptron();
     }
@@ -93,13 +94,13 @@ public class Main extends PApplet {
         int numEntradas = 2;
         int numSalidas = 1;
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Ingrese el número de epochs: (10, 100, 1000, etc.)");
+        System.out.println("Ingrese el número de epochs: [1, 10, 100, 1000, etc.)");
         int epochs = scanner.nextInt();
-        System.out.println("Ingrese el número de neuronas ocultas: (2, 4, 6, etc.)");
+        System.out.println("Ingrese el número de neuronas ocultas: [2, 4, 6, etc.)");
         int numOcultas = scanner.nextInt();
-        System.out.println("Ingrese el tamaño del batch: (10, 50, 100, etc.)");
+        System.out.println("Ingrese el tamaño del batch: [1, 10, 50, 100, etc.)");
         int batchSize = scanner.nextInt();
-        System.out.println("Ingrese la tasa de aprendizaje: (0,01, 0,1, 0,2, etc.)");
+        System.out.println("Ingrese la tasa de aprendizaje: [0 - 1]. Ej.:  0,1");
         float tasaAprendizaje = scanner.nextFloat();
         System.out.println("Cuantas redes neuronales desea crear? [1 - 10]");
         int numRedes = scanner.nextInt();
@@ -130,8 +131,8 @@ public class Main extends PApplet {
 
 
         // Cálculos para dimensiones de las gráficas
-        int filasDeGraficas = (int) Math.round(Math.sqrt(redesNeuronales.size() + 1));                         // Porciones de filas
-        int columnasDeGraficas = (int) Math.ceil((double) (redesNeuronales.size() + 1) / filasDeGraficas);     // Porciones de columnas
+        int columnasDeGraficas = (int) Math.round(Math.sqrt(redesNeuronales.size() + 1));                      // Porciones de columnas
+        int filasDeGraficas = (int) Math.ceil((double) (redesNeuronales.size() + 1) / columnasDeGraficas);        // Porciones de filas
         int anchoCuadrante = this.width / columnasDeGraficas;                                                  // Ancho de cada cuadrante
         int altoCuadrante = this.height / filasDeGraficas;                                                     // Alto de cada cuadrante
 
@@ -228,15 +229,14 @@ public class Main extends PApplet {
 //        System.out.println("------------------------------------------------------------");
 
 //    }
-//    @Override
-//    public void keyPressed(KeyEvent event) {
-//        if (event.getKey() == ENTER) {
-//            for (int i = 0; i < puntos.length; i++) {
-//                puntos[i] = new Punto(this);
-//                perceptron.resetPesosRandom();
-//            }
-//        }
-//        super.keyPressed(event);
+    @Override
+    public void keyPressed(KeyEvent event) {
+        if (event.getKey() == ENTER) {
+            for (RedNeuronal rn : redesNeuronales) {
+                rn.reset();
+            }
+        }
+        super.keyPressed(event);
 
-//    }
+    }
 }

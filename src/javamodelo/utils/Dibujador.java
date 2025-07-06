@@ -62,13 +62,18 @@ public class Dibujador {
         float y2 = areaGrafica.y + areaGrafica.height - MARGEN_GRAFICA;
 
         Color color = new Color((redNeuronal.ID * 50) % 255, (redNeuronal.ID * 80) % 255, (redNeuronal.ID * 120) % 255);
+        int margenEtiquetasFuncionesTop = -15;
+//        int margenEtiquetasFuncionesLeft = ;
+        int espacioEtiquetaCirculo = 20;
+        float x_init_etiquetas = x1 + 20 + (redNeuronal.ID / 5) * 100;
+        float y_init_etiquetas = margenEtiquetasFuncionesTop + y1 + (redNeuronal.ID % 5) * 15;
         // Texto
         pApplet.fill(0);
-        pApplet.text(redNeuronal.getFuncionDeActivacionOcultas().getNombre() , x2 - ((x2 - x1) / 2) + 20, y1 + (redNeuronal.ID * 15));
+        pApplet.text(redNeuronal.getFuncionDeActivacionOcultas().getNombre(), x_init_etiquetas + espacioEtiquetaCirculo, y_init_etiquetas);
         // Color
         pApplet.fill(color.getRGB());
         pApplet.stroke(color.getRGB());
-        pApplet.rect(x2 - ((x2 - x1) / 2), y1 + (redNeuronal.ID * 15) - 10 , 10, 10, 5);
+        pApplet.rect(x_init_etiquetas, y_init_etiquetas - 10, 10, 10, 5);
 
         for (int i = 0; i < errores.size(); i++) {
             float distanciasEjes = (x2 - x1);
