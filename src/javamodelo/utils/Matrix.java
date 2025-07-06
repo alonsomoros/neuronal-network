@@ -1,4 +1,4 @@
-package javamodelo;
+package javamodelo.utils;
 
 import java.util.Arrays;
 import java.util.function.Function;

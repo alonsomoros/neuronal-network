@@ -1,12 +1,13 @@
 package javamodelo;
 
+import javamodelo.funciones_de_activacion.FuncionDeActivacion;
+import javamodelo.funciones_de_activacion.FuncionDeActivacionContainer;
 import javamodelo.utils.Dibujador;
+import javamodelo.utils.Matrix;
 import processing.core.PApplet;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.function.Function;
 
 public class RedNeuronal {
 

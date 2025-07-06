@@ -1,4 +1,4 @@
-package javamodelo;
+package javamodelo.funciones_de_activacion;
 
 import java.util.function.Function;
 

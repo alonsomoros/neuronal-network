@@ -1,5 +1,7 @@
 package javamodelo;
 
+import javamodelo.funciones_de_activacion.FuncionDeActivacionContainer;
+
 import java.util.Random;
 
 // salida = ∑ wi xi + BIAS

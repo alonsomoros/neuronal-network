@@ -1,5 +1,7 @@
 package javamodelo;
 
+import javamodelo.funciones_de_activacion.FuncionDeActivacion;
+import javamodelo.funciones_de_activacion.FuncionDeActivacionContainer;
 import processing.core.PApplet;
 import processing.event.KeyEvent;
 
