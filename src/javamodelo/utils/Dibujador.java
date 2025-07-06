@@ -1,6 +1,6 @@
 package javamodelo.utils;
 
-import javamodelo.RedNeuronal;
+import javamodelo.pruebas.xor.RedNeuronal;
 import processing.core.PApplet;
 
 import java.awt.*;
@@ -24,28 +24,26 @@ public class Dibujador {
         float x2 = areaGrafica.x + areaGrafica.width - margin;
         float y1 = areaGrafica.y + margin; // = margin
         float y2 = areaGrafica.y + areaGrafica.height - margin;
+        Point tamanoTextoEpoch = new Point(30, 20);
+        Point tamanoTextoError = new Point(30, 20);
 
+        pApplet.fill(0);
+        pApplet.stroke(0);
         pApplet.strokeWeight(2); // Aumenta el grosor de la línea
         pApplet.line(x1, y2, x2, y2); // Horizontal
         pApplet.line(x1, y1, x1, y2); // Vertical
 
-        Point tamanoTextoEpoch = new Point(30, 20);
-        Point tamanoTextoError = new Point(30, 20);
-
-        pApplet.textSize(12);
-        pApplet.fill(0);
-        pApplet.text("Epochs", x1 - tamanoTextoEpoch.x, y2 + tamanoTextoEpoch.y);
-        pApplet.text("Error (MSE)", x1 - tamanoTextoError.x, y1 - tamanoTextoError.y);
-
         if (areaGrafica.width < 300) {
             pApplet.textSize(8);
-        }
+        } else pApplet.textSize(15);
+
+        pApplet.text("Epochs", x1 - tamanoTextoEpoch.x, y2 + tamanoTextoEpoch.y);
+        pApplet.text("Error (MSE)", x1 - tamanoTextoError.x, y1 - tamanoTextoError.y);
 
         for (int i = 1; i <= 10; i++) {
             pApplet.line(x1 + i * (x2 - x1) / 10, y2 - 2, x1 + i * (x2 - x1) / 10, y2 + 2);
             pApplet.text(String.valueOf(i * epochs / 10), x1 + i * (x2 - x1) / 10 - 5, y2 + 25);
         }
-        pApplet.textSize(12);
 
         for (int i = 1; i <= 10; i++) {
             pApplet.line(x1 - 2, y2 - i * (y2 - margin) / 10, x1 + 2, y2 - i * (y2 - margin) / 10);
@@ -62,11 +60,10 @@ public class Dibujador {
         float y2 = areaGrafica.y + areaGrafica.height - MARGEN_GRAFICA;
 
         Color color = new Color((redNeuronal.ID * 50) % 255, (redNeuronal.ID * 80) % 255, (redNeuronal.ID * 120) % 255);
-        int margenEtiquetasFuncionesTop = -15;
-//        int margenEtiquetasFuncionesLeft = ;
+        int margenEtiquetasFuncionesTop = 20;
         int espacioEtiquetaCirculo = 20;
-        float x_init_etiquetas = x1 + 20 + (redNeuronal.ID / 5) * 100;
-        float y_init_etiquetas = margenEtiquetasFuncionesTop + y1 + (redNeuronal.ID % 5) * 15;
+        float x_init_etiquetas = x1 + margenEtiquetasFuncionesTop + (redNeuronal.ID / 5) * 100;
+        float y_init_etiquetas = margenEtiquetasFuncionesTop + y1 + ((redNeuronal.ID + 1) % 4) * 15;
         // Texto
         pApplet.fill(0);
         pApplet.text(redNeuronal.getFuncionDeActivacionOcultas().getNombre(), x_init_etiquetas + espacioEtiquetaCirculo, y_init_etiquetas);
@@ -74,6 +71,7 @@ public class Dibujador {
         pApplet.fill(color.getRGB());
         pApplet.stroke(color.getRGB());
         pApplet.rect(x_init_etiquetas, y_init_etiquetas - 10, 10, 10, 5);
+
 
         for (int i = 0; i < errores.size(); i++) {
             float distanciasEjes = (x2 - x1);
@@ -96,8 +94,8 @@ public class Dibujador {
         int resolution = 10;
         int total_width = area.width;
         int total_height = area.height;
-        int cols = (int) ((total_width - (MARGEN_CUADRICULA * 2)) / resolution);
-        int rows = (int) ((total_height - (MARGEN_CUADRICULA * 2)) / resolution);
+        int cols = (total_width - (MARGEN_CUADRICULA * 2)) / resolution;
+        int rows = (total_height - (MARGEN_CUADRICULA * 2)) / resolution;
         for (int i = 0; i < cols; i++) {
             for (int j = 0; j < rows; j++) {
                 float x = (float) i / cols;
@@ -105,6 +103,7 @@ public class Dibujador {
                 Float[] inputs = {x, y};
                 Float[] prediction = this.redNeuronal.predict(inputs);
                 pApplet.stroke(0);
+                pApplet.strokeWeight(2);
                 pApplet.fill((prediction[0] * 255));
                 pApplet.rect(area.x + MARGEN_CUADRICULA + i * resolution, area.y + MARGEN_CUADRICULA + j * resolution, resolution, resolution);
             }

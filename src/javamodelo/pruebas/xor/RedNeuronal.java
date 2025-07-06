@@ -1,4 +1,4 @@
-package javamodelo;
+package javamodelo.pruebas.xor;
 
 import javamodelo.funciones_de_activacion.FuncionDeActivacion;
 import javamodelo.funciones_de_activacion.FuncionDeActivacionContainer;
