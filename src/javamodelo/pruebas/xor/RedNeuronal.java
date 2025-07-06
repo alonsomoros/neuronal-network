@@ -6,6 +6,7 @@ import javamodelo.utils.Dibujador;
 import javamodelo.utils.Matrix;
 import processing.core.PApplet;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -83,6 +84,10 @@ public class RedNeuronal {
 
         this.funcionDeActivacionOcultas = FuncionDeActivacionContainer.SIGMOIDE; // Función de activación de ocultas
         this.funcionDeActivacionSalidas = FuncionDeActivacionContainer.SIGMOIDE; // Función de activación de salidas
+    }
+
+    public void draw() {
+
     }
 
     public Float[] predict(Float[] entrada_array) {
@@ -249,7 +254,7 @@ public class RedNeuronal {
 
         if (this.getCurrentEpoch() % (filtro_epochs / 10) == 0) {
             if (this.getCurrentEpoch() % filtro_epochs == 0) {
-                System.out.printf("Red: %d - Epoch: %d, Coste: %.8f\nCorrectos: %.0f de %d (%.2f%%)\n",ID, this.getCurrentEpoch(), coste, sumCorrectos, this.getBatchSize(), (sumCorrectos / this.getBatchSize()));
+                System.out.printf("Red: %d - Epoch: %d, Coste: %.8f\nCorrectos: %.0f de %d (%.2f%%)\n", ID, this.getCurrentEpoch(), coste, sumCorrectos, this.getBatchSize(), (sumCorrectos / this.getBatchSize()));
             }
         }
     }
@@ -266,6 +271,18 @@ public class RedNeuronal {
         if (currentEpoch >= this.getEpochs()) {
             isTraining = false;
         }
+    }
+
+    public void dibujarCuadricula(PApplet pApplet, Rectangle area_cuadrante) {
+        dibujador.dibujarCuadricula(pApplet, area_cuadrante);
+    }
+
+    public void dibujarValoresGrafica(PApplet pApplet, Rectangle coordenadasGrafica, int epochs, ArrayList<Float> errores) {
+        dibujador.dibujarValoresGrafica(pApplet, coordenadasGrafica, epochs, errores);
+    }
+
+    public void dibujarEstructuraGrafica(PApplet pApplet, Rectangle areaGrafica, int margen, int epochs) {
+        dibujador.dibujarEstructuraGrafica(pApplet, areaGrafica, margen, epochs);
     }
 
     public void setTasa_aprendizaje(double tasa_aprendizaje) {

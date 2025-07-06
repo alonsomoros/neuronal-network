@@ -8,14 +8,12 @@ public class Punto {
     public float y;
     public Float etiqueta;
 
-    public PApplet applet;
 
-    public Punto(PApplet applet) {
-        this.applet = applet;
-        this.x = applet.random(-1, 1); // Random X entre -1 y 1
-        this.y = applet.random(-1, 1); // Random Y entre -1 y 1
+    public Punto() {
+        this.x = (float) (Math.random() * 2 - 1); // Random X entre -1 y 1
+        this.y = (float) (Math.random() * 2 - 1); // Random Y entre -1 y 1
 
-        float lineaY = Main.function(x);
+        float lineaY = Perceptron.function(x);
 
         if (y > lineaY) {
             etiqueta = 1.0f; // Clase Positiva
@@ -24,8 +22,7 @@ public class Punto {
         }
     }
 
-    public Punto(PApplet applet, float x, float y) {
-        this.applet = applet;
+    public Punto(float x, float y) {
         this.x = x;
         this.y = y;
         if (x > y) {
@@ -35,13 +32,13 @@ public class Punto {
         }
     }
 
-    public void show(PApplet applet) {
+    public void draw(PApplet applet) {
         if (etiqueta == 1) {
             applet.fill(255); // Blanco
         } else if (etiqueta == -1) {
             applet.fill(0); // Negro
         }
-        applet.ellipse(getXpixel(), getYpixel(), 8, 8);
+        applet.ellipse(getXpixel(applet), getYpixel(applet), 8, 8);
     }
 
     public void showEtiqueta(PApplet applet, Perceptron perceptron, Punto punto) {
@@ -57,15 +54,15 @@ public class Punto {
             applet.fill(255, 0, 0);
         }
         applet.noStroke();
-        applet.ellipse(punto.getXpixel(), punto.getYpixel(), 4, 4);
+        applet.ellipse(punto.getXpixel(applet), punto.getYpixel(applet), 4, 4);
     }
 
     // Para mappear valores
-    public Float getXpixel() {
+    public Float getXpixel(PApplet applet) {
         return map(x, -1, 1, 0, applet.width); // X -> entre -1 y 1 a 0 y width
     }
 
-    public Float getYpixel() {
+    public Float getYpixel(PApplet applet) {
         return map(y, -1, 1, applet.height, 0); // Y -> entre -1 y 1 a height y 0 (invertido)
     }
 }
