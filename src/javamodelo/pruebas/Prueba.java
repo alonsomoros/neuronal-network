@@ -4,26 +4,29 @@ import javamodelo.funciones_de_activacion.FuncionDeActivacion;
 import javamodelo.funciones_de_activacion.FuncionDeActivacionContainer;
 import javamodelo.pruebas.iris.Prueba_IRIS;
 import javamodelo.pruebas.xor.Prueba_XOR;
-import javamodelo.pruebas.xor.RedNeuronal;
 import javamodelo.utils.Helper;
 
 import java.util.ArrayList;
 
 public class Prueba {
-    protected final int NUM_NEURONAS = 8;
+    protected final int NUM_NEURONAS = 3;
     protected final int EPOCHS = 100;
-    protected final int NUM_CAPAS_ENTRADAS = 2;
-    protected final int NUM_CAPAS_OCULTAS = 4;
-    protected final int NUM_CAPAS_SALIDAS = 1;
     protected final int BATCH_SIZE = 50;
     protected ArrayList<RedNeuronal> redesNeuronales;
+    protected int NUM_CAPAS_ENTRADAS;
+    protected int NUM_CAPAS_OCULTAS;
+    protected int NUM_CAPAS_SALIDAS;
 
     protected static ArrayList<Data> DATASET;
     protected ArrayList<Data> datos_entrenamiento;
     protected ArrayList<Data> datos_test;
 
-    public Prueba(int porcentajeEntrenamiento) {
+    public Prueba(int num_capas_entradas, int num_capas_ocultas, int num_capas_salidas, int porcentajeEntrenamiento) {
         redesNeuronales = new ArrayList<>();
+        NUM_CAPAS_ENTRADAS = num_capas_entradas;
+        NUM_CAPAS_OCULTAS = num_capas_ocultas;
+        NUM_CAPAS_SALIDAS = num_capas_salidas;
+
         setUpEstructuraRedNeuronalPrueba();
         setUpDatosPrueba(porcentajeEntrenamiento);
         setUpDatosRedNeuronalPrueba();
@@ -64,7 +67,7 @@ public class Prueba {
                 default:
                     fa = FuncionDeActivacionContainer.getInstance().getFuncionDeActivacion((int) (Math.random() * 8 + 1));
             }
-            RedNeuronal redNeuronal = new RedNeuronal(EPOCHS, BATCH_SIZE, NUM_CAPAS_ENTRADAS, NUM_CAPAS_OCULTAS, fa, NUM_CAPAS_SALIDAS, FuncionDeActivacionContainer.SIGMOIDE);
+            RedNeuronal redNeuronal = new RedNeuronal(this, EPOCHS, BATCH_SIZE, NUM_CAPAS_ENTRADAS, NUM_CAPAS_OCULTAS, fa, NUM_CAPAS_SALIDAS, FuncionDeActivacionContainer.SIGMOIDE);
             redesNeuronales.add(redNeuronal);
         }
     }

@@ -3,14 +3,16 @@ package javamodelo.pruebas.xor;
 import javamodelo.funciones_de_activacion.FuncionDeActivacion;
 import javamodelo.funciones_de_activacion.FuncionDeActivacionContainer;
 import javamodelo.pruebas.Prueba;
+import javamodelo.pruebas.RedNeuronal;
 import processing.core.PApplet;
 
 import java.awt.*;
 import java.util.Scanner;
 
 public class Prueba_XOR extends Prueba {
-    public Prueba_XOR(int porcentajeEntrenamiento) {
-        super(porcentajeEntrenamiento);
+    public Prueba_XOR(int numEntradas, int numOcultas, int numSalidas, int porcentajeEntrenamiento) {
+        super(numEntradas, numOcultas, numSalidas, porcentajeEntrenamiento);
+
 //        setUpRedNeuronalXOR_entradas();
     }
 
@@ -72,7 +74,7 @@ public class Prueba_XOR extends Prueba {
             System.out.println("¿Que tipo de función quiere usar como capa oculta?:\n1. ReLU\n2. Sigmoide\n3. Tanh (Tangente Hiperbólica)\n4. Escalón\n5. LeakyReLU\n6. Swish\n7. Softplus\n8. Mish\n(Conteste con el Número)");
             int seleccion = scanner.nextInt();
             FuncionDeActivacion<Float> funcionOculta = FuncionDeActivacionContainer.getInstance().getFuncionDeActivacion(seleccion);
-            RedNeuronal redNeuronal = new RedNeuronal(epochs, batchSize, numEntradas, numOcultas, funcionOculta, numSalidas, FuncionDeActivacionContainer.SIGMOIDE);
+            RedNeuronal redNeuronal = new RedNeuronal(this, epochs, batchSize, numEntradas, numOcultas, funcionOculta, numSalidas, FuncionDeActivacionContainer.SIGMOIDE);
 
             redNeuronal.setTasa_aprendizaje(tasaAprendizaje);
 

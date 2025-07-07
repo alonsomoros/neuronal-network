@@ -1,6 +1,6 @@
 package javamodelo.utils;
 
-import javamodelo.pruebas.xor.RedNeuronal;
+import javamodelo.pruebas.RedNeuronal;
 import processing.core.PApplet;
 
 import java.awt.*;
