@@ -2,6 +2,8 @@ package javamodelo.pruebas.xor;
 
 import javamodelo.funciones_de_activacion.FuncionDeActivacion;
 import javamodelo.funciones_de_activacion.FuncionDeActivacionContainer;
+import javamodelo.pruebas.Data;
+import javamodelo.pruebas.iris.IrisData;
 import javamodelo.utils.Dibujador;
 import javamodelo.utils.Matrix;
 import processing.core.PApplet;
@@ -20,8 +22,8 @@ public class RedNeuronal {
     private int currentEpoch = 0;
     private boolean isTraining = false;
     private final int batchSize;
-    private Float[][][] datos_entrenamiento;
-    private Float[][][] datos_test;
+    private ArrayList<Data> datos_entrenamiento;
+    private ArrayList<Data> datos_test;
     private final int nodos_entradas; // Número de nodos en la capa de entrada
     private final int nodos_ocultos; // Número de nodos en la capa oculta
     private final int nodos_salidas; // Número de nodos en la capa de salida
@@ -233,17 +235,17 @@ public class RedNeuronal {
         return new Float[]{mse, correctos};
     }
 
-    private void entrenarEpoch(Float[][][] datos_entrenamiento) {
-        ArrayList<Float[][]> batch = new ArrayList<>();
+    private void entrenarEpoch(ArrayList<Data> datos_entrenamiento) {
+        ArrayList<Data> batch = new ArrayList<>();
         for (int j = 0; j < this.getBatchSize(); j++) { // Tamaño del batch
-            batch.add(datos_entrenamiento[new Random().nextInt(datos_entrenamiento.length)]);
+            batch.add(datos_entrenamiento.get(new Random().nextInt(datos_entrenamiento.size())));
         }
 
         float coste = 0f;
         float sumCorrectos = 0f;
-        for (Float[][] data : batch) {
-            Float[] entradas = data[0]; // [e1, e2]
-            Float[] objetivos = data[1]; // [obj1]
+        for (Data data : batch) {
+            Float[] entradas = data.getEntradas(); // [e1, e2]
+            Float[] objetivos = data.getObjetivos(); // [obj1]
             Float[] resultadoEntrenamiento = this.entrenar(entradas, objetivos); // MSE y Correctos
 
             sumCorrectos += resultadoEntrenamiento[1];
@@ -317,19 +319,19 @@ public class RedNeuronal {
         return batchSize;
     }
 
-    public void setDatosEntrenamiento(Float[][][] datos_entrenamiento) {
+    public void setDatosEntrenamiento(ArrayList<Data> datos_entrenamiento) {
         this.datos_entrenamiento = datos_entrenamiento;
     }
 
-    public Float[][][] getDatosEntrenamiento() {
+    public ArrayList<Data> getDatosEntrenamiento() {
         return datos_entrenamiento;
     }
 
-    public void setDatosTest(Float[][][] datos_test) {
+    public void setDatosTest(ArrayList<Data> datos_test) {
         this.datos_test = datos_test;
     }
 
-    public Float[][][] getDatosTest() {
+    public ArrayList<Data> getDatosTest() {
         return datos_test;
     }
 
