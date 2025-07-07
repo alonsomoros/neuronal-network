@@ -64,13 +64,14 @@ public class Matrix {
     }
 
     public Float[] toArrayUnidimensional() {
-        Float[] array = new Float[this.filas];
+        Float[] matrixArray = new Float[this.filas * this.columnas];
+        int index = 0;
         for (int i = 0; i < this.filas; i++) {
             for (int j = 0; j < this.columnas; j++) {
-                array[i] = (float) this.datos[i][j];
+                matrixArray[index++] = (float) this.datos[i][j];
             }
         }
-        return array;
+        return matrixArray;
     }
 
     // Randomiza la matriz
@@ -465,6 +466,43 @@ public class Matrix {
         }
         return resultado;
     }
+    public void mapArrayFunction(Function<Float[], Float[]> arrayFunction) {
+        // Convert matrix to array
+        Float[] matrixArray = this.toArrayUnidimensional();
+
+        // Apply function
+        Float[] resultArray = arrayFunction.apply(matrixArray);
+
+        // Convert back to matrix
+        Matrix resultado = new Matrix(this.filas, this.columnas);
+        int index = 0;
+        for (int i = 0; i < this.filas; i++) {
+            for (int j = 0; j < this.columnas; j++) {
+                resultado.datos[i][j] = resultArray[index++];
+            }
+        }
+
+    }
+
+    public static Matrix mapArrayFunction(Matrix m, Function<Float[], Float[]> arrayFunction) {
+        // Convert matrix to array
+        Float[] matrixArray = m.toArrayUnidimensional();
+
+        // Apply function
+        Float[] resultArray = arrayFunction.apply(matrixArray);
+
+        // Convert back to matrix
+        Matrix resultado = new Matrix(m.filas, m.columnas);
+        int index = 0;
+        for (int i = 0; i < m.filas; i++) {
+            for (int j = 0; j < m.columnas; j++) {
+                resultado.datos[i][j] = resultArray[index++];
+            }
+        }
+
+        return resultado;
+    }
+
 
     public int getFilas() {
         return filas;
