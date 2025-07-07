@@ -40,34 +40,42 @@ public class Prueba {
     }
 
     public void setUpEstructuraRedNeuronalPrueba() {
-        FuncionDeActivacion<Float> fa;
+        FuncionDeActivacion<Float> funcionDeActivacionOculta;
         for (int i = 0; i < this.NUM_NEURONAS; i++) {
             switch (i) {
                 case 0:
-                    fa = FuncionDeActivacionContainer.LEAKY_RELU;
+                    funcionDeActivacionOculta = FuncionDeActivacionContainer.LEAKY_RELU;
                     break;
                 case 1:
-                    fa = FuncionDeActivacionContainer.RELU;
+                    funcionDeActivacionOculta = FuncionDeActivacionContainer.RELU;
                     break;
                 case 2:
-                    fa = FuncionDeActivacionContainer.TANH;
+                    funcionDeActivacionOculta = FuncionDeActivacionContainer.TANH;
                     break;
                 case 3:
-                    fa = FuncionDeActivacionContainer.ESCALON;
+                    funcionDeActivacionOculta = FuncionDeActivacionContainer.ESCALON;
                     break;
                 case 4:
-                    fa = FuncionDeActivacionContainer.SWISH;
+                    funcionDeActivacionOculta = FuncionDeActivacionContainer.SWISH;
                     break;
                 case 5:
-                    fa = FuncionDeActivacionContainer.SOFTPLUS;
+                    funcionDeActivacionOculta = FuncionDeActivacionContainer.SOFTPLUS;
                     break;
                 case 6:
-                    fa = FuncionDeActivacionContainer.MISH;
+                    funcionDeActivacionOculta = FuncionDeActivacionContainer.MISH;
                     break;
                 default:
-                    fa = FuncionDeActivacionContainer.getInstance().getFuncionDeActivacion((int) (Math.random() * 8 + 1));
+                    funcionDeActivacionOculta = FuncionDeActivacionContainer.getInstance().getFuncionDeActivacion((int) (Math.random() * 8 + 1));
             }
-            RedNeuronal redNeuronal = new RedNeuronal(this, EPOCHS, BATCH_SIZE, NUM_CAPAS_ENTRADAS, NUM_CAPAS_OCULTAS, fa, NUM_CAPAS_SALIDAS, FuncionDeActivacionContainer.SIGMOIDE);
+
+            RedNeuronal redNeuronal;
+            FuncionDeActivacion<Float> funcionDeActivacionSalida;
+            if (this instanceof Prueba_IRIS) {
+                funcionDeActivacionSalida = FuncionDeActivacionContainer.SOFTMAX;
+            } else {
+                funcionDeActivacionSalida = FuncionDeActivacionContainer.SIGMOIDE;
+            }
+            redNeuronal = new RedNeuronal(this, EPOCHS, BATCH_SIZE, NUM_CAPAS_ENTRADAS, NUM_CAPAS_OCULTAS, funcionDeActivacionOculta, NUM_CAPAS_SALIDAS, funcionDeActivacionSalida);
             redesNeuronales.add(redNeuronal);
         }
     }
