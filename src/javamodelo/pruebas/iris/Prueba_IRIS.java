@@ -1,18 +1,15 @@
 package javamodelo.pruebas.iris;
 
-import javamodelo.pruebas.Data;
 import javamodelo.pruebas.Prueba;
-import javamodelo.pruebas.xor.RedNeuronal;
-import javamodelo.utils.Helper;
+import javamodelo.pruebas.RedNeuronal;
 import processing.core.PApplet;
 
 import java.awt.*;
-import java.util.ArrayList;
 
 public class Prueba_IRIS extends Prueba {
 
-    public Prueba_IRIS(int porcentajeEntrenamiento) {
-        super(porcentajeEntrenamiento);
+    public Prueba_IRIS(int num_capas_entradas, int num_capas_ocultas, int num_capas_salidas, int porcentajeEntrenamiento) {
+        super(num_capas_entradas, num_capas_ocultas, num_capas_salidas, porcentajeEntrenamiento);
     }
 
     public void draw(PApplet pApplet) {
