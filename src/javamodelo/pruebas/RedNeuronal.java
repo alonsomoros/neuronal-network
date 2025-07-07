@@ -1,9 +1,11 @@
-package javamodelo.pruebas.xor;
+package javamodelo.pruebas;
 
 import javamodelo.funciones_de_activacion.FuncionDeActivacion;
 import javamodelo.funciones_de_activacion.FuncionDeActivacionContainer;
 import javamodelo.pruebas.Data;
 import javamodelo.pruebas.iris.IrisData;
+import javamodelo.pruebas.iris.Prueba_IRIS;
+import javamodelo.pruebas.xor.Prueba_XOR;
 import javamodelo.utils.Dibujador;
 import javamodelo.utils.Matrix;
 import processing.core.PApplet;
@@ -14,6 +16,7 @@ import java.util.Random;
 
 public class RedNeuronal {
 
+    private Prueba pruebaAsignada;
     private static int contadorID = 0;
     public int ID = ++contadorID;
     private Dibujador dibujador;
@@ -36,7 +39,8 @@ public class RedNeuronal {
     private final FuncionDeActivacion<Float> funcionDeActivacionSalidas;
     private ArrayList<Float> errores_epochs = new ArrayList<>();
 
-    public RedNeuronal(int epochs, int batchSize, int numEntradas, int numOcultos, FuncionDeActivacion<Float> funcionDeActivacionOcultas, int numSalidas, FuncionDeActivacion<Float> funcionDeActivacionSalidas) {
+    public RedNeuronal(Prueba pruebaAsignada, int epochs, int batchSize, int numEntradas, int numOcultos, FuncionDeActivacion<Float> funcionDeActivacionOcultas, int numSalidas, FuncionDeActivacion<Float> funcionDeActivacionSalidas) {
+        this.pruebaAsignada = pruebaAsignada;
         this.dibujador = new Dibujador(this);
 
         this.epochs = epochs;
@@ -215,11 +219,57 @@ public class RedNeuronal {
 
         // ---------- CALCULO DEL MSE ----------
 
-        Matrix mseMatriz = Matrix.multiplicarMatrices(error_salidas, error_salidas); // MSE = (T - O)² - [2x1]
+        Matrix mseMatriz = Matrix.multiplicarElementwise(error_salidas, error_salidas); // MSE = (T - O)² - [2x1]
         float mse = Matrix.sumaElementosMatriz(mseMatriz); // MSE = Σ(T - O)²
         mse /= objetivos.toArray().length; // MSE = Σ(T - O)² / N
 
-        float correctos = 0f;
+        float correcto = calcularCorrectos(salidas, objetivos);
+
+        return new Float[]{mse, correcto};
+    }
+
+    private Float calcularCorrectos(Matrix salidas, Matrix objetivos) {
+        Float correcto = 0f;
+
+        if (this.pruebaAsignada instanceof Prueba_XOR) {
+            correcto = calcularCorrectos_XOR(salidas, objetivos);
+        } else if (this.pruebaAsignada instanceof Prueba_IRIS) {
+            correcto = calcularCorrectos_IRIS(salidas, objetivos);
+        }
+
+        return correcto;
+    }
+
+    private float calcularCorrectos_IRIS(Matrix salidas, Matrix objetivos) {
+        double[][] salidasArray = salidas.toArray();      // tamaño [3][1]
+        double[][] objetivosArray = objetivos.toArray();    // tamaño [3][1]
+
+        // 1) Encontrar índice del máximo en salida
+        int idxMaxSalidas = 0;
+        double maxVal = salidasArray[0][0];
+        for (int i = 1; i < salidasArray.length; i++) {
+            if (salidasArray[i][0] > maxVal) {
+                maxVal    = salidasArray[i][0];
+                idxMaxSalidas = i;
+            }
+        }
+
+        // 2) Encontrar índice del 1 en el target one-hot
+        int idxMaxObjetivos = 0;
+        for (int i = 0; i < objetivosArray.length; i++) {
+            if (objetivosArray[i][0] == 1.0) {
+                idxMaxObjetivos = i;
+                break;
+            }
+        }
+
+        // 3) Comparar índices
+        return (idxMaxSalidas == idxMaxObjetivos) ? 1f : 0f;
+    }
+
+    private Float calcularCorrectos_XOR(Matrix salidas, Matrix objetivos) {
+        Float correcto = 0f;
+
         for (int i = 0; i < salidas.toArray().length; i++) {
             float clasificacionBinaria = 0;
 
@@ -229,10 +279,10 @@ public class RedNeuronal {
             } else {
                 clasificacionBinaria = 0; // Clase negativa
             }
-            if (clasificacionBinaria == objetivos.toArray()[i][0]) correctos++;
+            if (clasificacionBinaria == objetivos.toArray()[i][0]) correcto++;
         }
 
-        return new Float[]{mse, correctos};
+        return correcto;
     }
 
     private void entrenarEpoch(ArrayList<Data> datos_entrenamiento) {
