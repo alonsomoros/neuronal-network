@@ -62,8 +62,9 @@ public class Dibujador {
         Color color = new Color((redNeuronal.ID * 50) % 255, (redNeuronal.ID * 80) % 255, (redNeuronal.ID * 120) % 255);
         int margenEtiquetasFuncionesTop = 20;
         int espacioEtiquetaCirculo = 20;
-        float x_init_etiquetas = x1 + margenEtiquetasFuncionesTop + (redNeuronal.ID / 5) * 100;
-        float y_init_etiquetas = margenEtiquetasFuncionesTop + y1 + ((redNeuronal.ID + 1) % 4) * 15;
+        int numFilas = 5;
+        float x_init_etiquetas = (float) (x1 + margenEtiquetasFuncionesTop + Math.floor((double) redNeuronal.ID / (numFilas + 1)) * 100);
+        float y_init_etiquetas = margenEtiquetasFuncionesTop + y1 + ((redNeuronal.ID - 1) % numFilas) * 15;
         // Texto
         pApplet.fill(0);
         pApplet.text(redNeuronal.getFuncionDeActivacionOcultas().getNombre(), x_init_etiquetas + espacioEtiquetaCirculo, y_init_etiquetas);
