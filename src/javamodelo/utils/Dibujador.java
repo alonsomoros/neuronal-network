@@ -9,12 +9,14 @@ import java.util.ArrayList;
 public class Dibujador {
 
     private final RedNeuronal redNeuronal;
+    Color colorRedNeuronal;
 
     public final int MARGEN_GRAFICA = 50;
     public final int MARGEN_CUADRICULA = 5;
 
     public Dibujador(RedNeuronal redNeuronal) {
         this.redNeuronal = redNeuronal;
+        this.colorRedNeuronal = new Color((redNeuronal.ID * 50) % 255, (redNeuronal.ID * 80) % 255, (redNeuronal.ID * 120) % 255);
     }
 
     public void dibujarEstructuraGrafica(PApplet pApplet, Rectangle areaGrafica, float margin, int epochs) {
@@ -59,7 +61,6 @@ public class Dibujador {
         float y1 = areaGrafica.y + MARGEN_GRAFICA; // = margin
         float y2 = areaGrafica.y + areaGrafica.height - MARGEN_GRAFICA;
 
-        Color color = new Color((redNeuronal.ID * 50) % 255, (redNeuronal.ID * 80) % 255, (redNeuronal.ID * 120) % 255);
         int margenEtiquetasFuncionesTop = 20;
         int espacioEtiquetaCirculo = 20;
         int numFilas = 5;
@@ -69,8 +70,8 @@ public class Dibujador {
         pApplet.fill(0);
         pApplet.text(redNeuronal.getFuncionDeActivacionOcultas().getNombre(), x_init_etiquetas + espacioEtiquetaCirculo, y_init_etiquetas);
         // Color
-        pApplet.fill(color.getRGB());
-        pApplet.stroke(color.getRGB());
+        pApplet.fill(colorRedNeuronal.getRGB());
+        pApplet.stroke(colorRedNeuronal.getRGB());
         pApplet.rect(x_init_etiquetas, y_init_etiquetas - 10, 10, 10, 5);
 
 
@@ -105,7 +106,8 @@ public class Dibujador {
                 Float[] prediction = this.redNeuronal.predict(inputs);
                 pApplet.stroke(0);
                 pApplet.strokeWeight(2);
-                pApplet.fill((prediction[0] * 255));
+//                pApplet.fill((prediction[0] * 255));
+                pApplet.fill((prediction[0] * colorRedNeuronal.getRed()), (prediction[0] * colorRedNeuronal.getGreen()), (prediction[0] * colorRedNeuronal.getBlue()));
                 pApplet.rect(area.x + MARGEN_CUADRICULA + i * resolution, area.y + MARGEN_CUADRICULA + j * resolution, resolution, resolution);
             }
         }
