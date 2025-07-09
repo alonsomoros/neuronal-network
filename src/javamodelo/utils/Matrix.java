@@ -474,11 +474,10 @@ public class Matrix {
         Float[] resultArray = arrayFunction.apply(matrixArray);
 
         // Convert back to matrix
-        Matrix resultado = new Matrix(this.filas, this.columnas);
         int index = 0;
         for (int i = 0; i < this.filas; i++) {
             for (int j = 0; j < this.columnas; j++) {
-                resultado.datos[i][j] = resultArray[index++];
+                this.datos[i][j] = resultArray[index++];
             }
         }
 

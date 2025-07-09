@@ -161,8 +161,7 @@ public class RedNeuronal {
         // Calcular la capa oculta
         Matrix salidasOculto = Matrix.multiplicarMatrices(this.pesos_entradas_a_ocultos, entradas); // Se pone al revés para que porEj 2x1 (inputs) * 4x2 (pesos) sea 4x2·2x1 -> dando una 4x1
         salidasOculto.sumar(this.bias_ocultos);
-        salidasOculto = Matrix.mapArrayFunction(salidasOculto, this.funcionDeActivacionOcultas.getFunction());
-        salidasOculto.mapArrayFunction(this.funcionDeActivacionOcultas.getFunction()); // Aplica la función de activación
+        salidasOculto.mapArrayFunction(this.funcionDeActivacionOcultas.getFunction());
 
         // Calcular la salida
         Matrix salidas = Matrix.multiplicarMatrices(this.pesos_ocultos_a_salidas, salidasOculto); // [2x1]
@@ -182,8 +181,7 @@ public class RedNeuronal {
         // 2º Gradiente
         Matrix gradiente_salidas; // δO
         if (usaSoftmax) {
-            // Softmax + Cross‑Entropy:
-            // δO = output - target
+            // Softmax + Cross‑Entropy: δO = output - target
             gradiente_salidas = Matrix.restarMatrices(salidas, objetivos);
         } else {
             gradiente_salidas = Matrix.mapArrayFunction(salidas, this.funcionDeActivacionSalidas.getDerivative()); // δO = [σ′(zOutput)] - [2x1]
